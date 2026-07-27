@@ -152,7 +152,7 @@ body {
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     padding: 2rem;
-    text-align: left;
+    text-align: center;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
