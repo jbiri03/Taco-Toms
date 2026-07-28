@@ -105,7 +105,7 @@ body {
     /* BACKGROUND IMAGE */
     background:
         linear-gradient(var(--bg-overlay), var(--bg-overlay)),
-        url("https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?auto=format&fit=crop&w=1600&q=80")
+        url("images/dishes.jpg")
         center/cover no-repeat;
     display: flex;
     align-items: center;
