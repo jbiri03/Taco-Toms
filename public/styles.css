@@ -102,11 +102,9 @@ body {
 /* HERO */
 .hero-section {
     min-height: 100vh;
-    /* BACKGROUND IMAGE */
     background:
         linear-gradient(var(--bg-overlay), var(--bg-overlay)),
-        url("images/dishes.jpg")
-        center/cover no-repeat;
+        url("images/dishes.jpg") center/cover no-repeat;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -137,11 +135,6 @@ body {
     text-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
 }
 
-
-
-
-
-
 .hero-subtitle {
     font-size: clamp(1rem, 2vw, 1.35rem);
     color: #f6e7d9;
@@ -152,7 +145,6 @@ body {
 /* CARDS */
 .hero-cards {
     width: 100%;
-
     display: grid;
     grid-template-columns: repeat(2, minmax(260px, 1fr));
     gap: 1.5rem;
@@ -184,9 +176,7 @@ body {
     font-size: large;
     color: var(--text-muted);
     margin-bottom: 1.35rem;
-
 }
-
 
 .card-button {
     display: inline-block;
@@ -205,52 +195,7 @@ body {
     transform: translateY(-2px);
 }
 
-
-
-
-/* RESPONSIVE */
-@media (max-width: 900px) {
-    .navigation {
-        justify-content: center;
-    }
-
-    .hero-cards {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 640px) {
-    .site-header {
-        padding: 1rem;
-    }
-
-    .nav-logo {
-        font-size: 1.5rem;
-    }
-
-    .nav-links {
-        justify-content: center;
-        gap: 0.5rem;
-    }
-
-    .nav-link {
-        padding: 0.55rem 0.8rem;
-        font-size: 0.95rem;
-    }
-
-    .hero-section {
-        padding-top: 9rem;
-    }
-
-    .card.info-card {
-        padding: 1.5rem;
-    }
-
-    .hero-title {
-        letter-spacing: 0.03em;
-    }
-}
-
+/* GALLERY */
 .gallery-section {
     padding: 5rem 2rem;
     background: #fff7f1;
@@ -289,9 +234,9 @@ body {
 
 .gallery-slider {
     position: relative;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 .gallery-track {
@@ -320,6 +265,9 @@ body {
 }
 
 .gallery-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     width: 52px;
     height: 52px;
     border: none;
@@ -328,13 +276,44 @@ body {
     color: white;
     font-size: 1.5rem;
     cursor: pointer;
-    flex-shrink: 0;
+    z-index: 2;
     transition: background 0.25s ease, transform 0.25s ease;
 }
 
 .gallery-arrow:hover {
     background: #a93226;
-    transform: scale(1.06);
+    transform: translateY(-50%) scale(1.06);
+}
+
+.left-arrow {
+    left: 1rem;
+}
+
+.right-arrow {
+    right: 1rem;
+}
+
+.gallery-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.65rem;
+    margin-top: 1.5rem;
+}
+
+.gallery-dot {
+    width: 12px;
+    height: 12px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(206, 17, 38, 0.28);
+    cursor: pointer;
+    transition: transform 0.25s ease, background-color 0.25s ease;
+}
+
+.gallery-dot.active {
+    background: #CE1126;
+    transform: scale(1.15);
 }
 
 /* ANIMATION BEHAVIOR */
@@ -354,6 +333,73 @@ body {
 }
 
 /* ANIMATION ACTION */
-.hero-title, .hero-subtitle, .hero-cards .card.info-card{
+.hero-title,
+.hero-subtitle,
+.hero-cards .card.info-card {
     animation: titlePopIn 0.75s ease-out forwards;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .navigation {
+        justify-content: center;
+    }
+
+    .hero-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .gallery-slider {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .site-header {
+        padding: 1rem;
+    }
+
+    .nav-logo {
+        font-size: 1.5rem;
+    }
+
+    .nav-links {
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .nav-link {
+        padding: 0.55rem 0.8rem;
+        font-size: 0.95rem;
+    }
+
+    .hero-section {
+        padding-top: 9rem;
+    }
+
+    .card.info-card {
+        padding: 1.5rem;
+    }
+
+    .hero-title {
+        letter-spacing: 0.03em;
+    }
+
+    .gallery-slide img {
+        height: 300px;
+    }
+
+    .gallery-arrow {
+        width: 44px;
+        height: 44px;
+        font-size: 1.2rem;
+    }
+
+    .left-arrow {
+        left: 0.6rem;
+    }
+
+    .right-arrow {
+        right: 0.6rem;
+    }
 }
