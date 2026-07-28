@@ -40,19 +40,24 @@ body {
     top: 0;
     z-index: 1000;
     width: 100%;
-    padding: 1rem 2rem;
-    background: rgba(31, 26, 23, 0.88);
-    backdrop-filter: blur(10px);
+    padding: 1rem 1.25rem;
+    background: transparent;
 }
 
 .navigation {
-    max-width: var(--max-width);
+    width: min(100%, 1320px);
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
+    padding: 1rem 1.75rem;
+    background: rgba(31, 26, 23, 0.88);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
 }
 
 .nav-logo {
@@ -85,13 +90,13 @@ body {
 }
 
 .nav-cta {
-    background-color: var(--accent);
+    background-color: #CE1126;
     color: white;
-    box-shadow: 0 10px 24px rgba(230, 126, 34, 0.35);
+    box-shadow: 0 10px 24px rgba(192, 57, 43, 0.35);
 }
 
 .nav-cta:hover {
-    background-color: var(--accent-dark);
+    background-color: #a30d1e;
 }
 
 /* HERO */
