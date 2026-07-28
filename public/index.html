@@ -12,7 +12,6 @@
             <a href="#" class="nav-logo">Taco Tom's</a>
 
             <div class="nav-links">
-                <a href="#" class="nav-link">Home</a>
                 <a href="#" class="nav-link">Menu</a>
                 <a href="#" class="nav-link">About</a>
                 <a href="#" class="nav-link">Contact</a>
@@ -37,21 +36,56 @@
 
                 <div class="hero-cards">
                     <!-- JUMP TO MENU PAGE -->
-                    <div class="card info-card">
+                    <div class="card info-card scroll-reveal">
                         <h2 class="card-title">Our Menu</h2>
                         <p class="card-text">Real ingredients, real flavor — made fresh every day.</p>
                         <a href="#" class="card-button">View Menu</a>
                     </div>
 
                     <!-- INCORPORATE DOORDASH WEBSITE -->
-                    <div class="card info-card">
+                    <div class="card info-card scroll-reveal">
                         <h2 class="card-title">Mexican Eats To Go</h2>
                         <p class="card-text">Order for pickup or delivery.</p>
-                        <a href="#" class="card-button">Order Now</a>
+                        <a href="https://www.doordash.com/store/taco-tom's-vancouver-42143605/103741553/?event_type=autocomplete&pickup=false" target="_blank" rel="nofollow" class="card-button">Order Now</a>
                     </div>
                 </div>
             </div>
         </section>
+        <!-- SECOND SECTION -->
+        <section class="gallery-section">
+            <div class="gallery-wrapper">
+                <div class="gallery-text">
+                    <p class="section-tag">TONS OF OPTIONS</p>
+                    <h2 class="gallery-heading">Freshly Cooked Food</h2>
+                    <p class="gallery-description">No shortcuts. No frozen food. Just real flavor.</p>
+                </div>
+
+                <div class="gallery-slider">
+                    <button class="gallery-arrow left-arrow" id="prevBtn" aria-label="Previous image">
+                        &#10094;
+                    </button>
+
+                    <div class="gallery-track" id="galleryTrack">
+                        <div class="gallery-slide">
+                            <img src="images/taco1.jpg" alt="Fresh tacos on a plate">
+                        </div>
+                        <div class="gallery-slide">
+                            <img src="images/taco2.jpg" alt="Burrito served hot with salsa">
+                        </div>
+                        <div class="gallery-slide">
+                            <img src="images/taco3.jpg" alt="Freshly cooked Mexican food">
+                        </div>
+                    </div>
+
+                    <button class="gallery-arrow right-arrow" id="nextBtn" aria-label="Next image">
+                        &#10095;
+                    </button>
+                </div>
+            </div>
+        </section>
     </main>
+
+    <!-- SCRIPTS -->
+    <script src="gallery.js"></script>
 </body>
 </html>

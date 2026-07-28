@@ -31,16 +31,18 @@ body {
     color: var(--text-dark);
     background-color: #f7efe8;
     line-height: 1.6;
+    margin: 0;
 }
 
 /* HEADER */
 .site-header {
-    position: absolute;
+    position: sticky;
     top: 0;
-    left: 0;
+    z-index: 1000;
     width: 100%;
-    z-index: 10;
-    padding: 1.2rem 2rem;
+    padding: 1rem 2rem;
+    background: rgba(31, 26, 23, 0.88);
+    backdrop-filter: blur(10px);
 }
 
 .navigation {
@@ -95,6 +97,7 @@ body {
 /* HERO */
 .hero-section {
     min-height: 100vh;
+    /* BACKGROUND IMAGE */
     background:
         linear-gradient(var(--bg-overlay), var(--bg-overlay)),
         url("https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?auto=format&fit=crop&w=1600&q=80")
@@ -129,6 +132,11 @@ body {
     text-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
 }
 
+
+
+
+
+
 .hero-subtitle {
     font-size: clamp(1rem, 2vw, 1.35rem);
     color: #f6e7d9;
@@ -139,6 +147,7 @@ body {
 /* CARDS */
 .hero-cards {
     width: 100%;
+
     display: grid;
     grid-template-columns: repeat(2, minmax(260px, 1fr));
     gap: 1.5rem;
@@ -151,7 +160,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.28);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 2rem;
+    padding: 2.5rem;
     text-align: center;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
@@ -162,15 +171,17 @@ body {
 }
 
 .card-title {
-    font-size: 1.55rem;
+    font-size: 2.5rem;
     color: var(--text-dark);
-    margin-bottom: 0.75rem;
 }
 
 .card-text {
+    font-size: large;
     color: var(--text-muted);
     margin-bottom: 1.35rem;
+
 }
+
 
 .card-button {
     display: inline-block;
@@ -181,12 +192,16 @@ body {
     padding: 0.85rem 1.25rem;
     border-radius: 999px;
     transition: background-color 0.25s ease, transform 0.25s ease;
+    font-size: larger;
 }
 
 .card-button:hover {
     background-color: #a93226;
     transform: translateY(-2px);
 }
+
+
+
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
@@ -229,4 +244,111 @@ body {
     .hero-title {
         letter-spacing: 0.03em;
     }
+}
+
+.gallery-section {
+    padding: 5rem 2rem;
+    background: #fff7f1;
+}
+
+.gallery-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.gallery-text {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.section-tag {
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: #c86410;
+    margin-bottom: 0.75rem;
+}
+
+.gallery-heading {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 0.75rem;
+    color: #2f241d;
+}
+
+.gallery-description {
+    font-size: 1.1rem;
+    color: #6e5b4f;
+    margin: 0 auto;
+    max-width: 600px;
+}
+
+.gallery-slider {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.gallery-track {
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    border-radius: 18px;
+}
+
+.gallery-slide {
+    min-width: 100%;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    overflow: hidden;
+    border-radius: 18px;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
+}
+
+.gallery-slide img {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    display: block;
+}
+
+.gallery-arrow {
+    width: 52px;
+    height: 52px;
+    border: none;
+    border-radius: 50%;
+    background: #c0392b;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.gallery-arrow:hover {
+    background: #a93226;
+    transform: scale(1.06);
+}
+
+/* ANIMATION BEHAVIOR */
+@keyframes titlePopIn {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.9);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(-6px) scale(1.03);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ANIMATION ACTION */
+.hero-title, .hero-subtitle, .hero-cards .card.info-card{
+    animation: titlePopIn 0.75s ease-out forwards;
 }
