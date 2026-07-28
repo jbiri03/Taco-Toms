@@ -72,7 +72,7 @@ prevBtn.addEventListener("click", () => {
 /* Resize */
 window.addEventListener("resize", () => updateSlider(false));
 
-/* ⭐ AUTOPLAY ⭐ */
+
 /* AUTOPLAY CONTROL */
 let autoplayInterval;
 let autoplayDelay = 3500;
