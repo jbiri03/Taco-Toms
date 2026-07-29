@@ -487,13 +487,12 @@ body {
     line-height: 1.5;
 }
 
-/* Big pill button like the reference */
 .location-link {
     display: inline-block;
     margin-top: 0.5rem;
     padding: 0.9rem 1.6rem;
     border-radius: 999px;
-    background: #e11d48;
+    background: var(--accent);
     color: #fff8f0;
     text-decoration: none;
     font-weight: 700;
@@ -503,7 +502,7 @@ body {
 }
 
 .location-link:hover {
-    background: #be123c;
+    background: var(--accent-dark);
     transform: translateY(-2px);
 }
 
