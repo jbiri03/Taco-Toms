@@ -6,7 +6,7 @@ const dotsContainer = document.getElementById("galleryDots");
 
 let currentIndex = 0;
 
-/* Create dots */
+/*DOTS */
 slides.forEach((_, index) => {
     const dot = document.createElement("button");
     dot.classList.add("gallery-dot");
@@ -69,7 +69,6 @@ prevBtn.addEventListener("click", () => {
 });
 
 
-/* Resize */
 window.addEventListener("resize", () => updateSlider(false));
 
 
@@ -86,11 +85,11 @@ function startAutoplay() {
     }, autoplayDelay);
 }
 
+// PAUSE AND RESUME
 function pauseAutoplay() {
     autoplayPaused = true;
     clearInterval(autoplayInterval);
 
-    // Optional: resume after 5 seconds
     setTimeout(() => {
         autoplayPaused = false;
         startAutoplay();
