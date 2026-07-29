@@ -40,10 +40,10 @@ function updateSlider(smooth = true) {
 function goNext() {
     if (currentIndex < slides.length - 1) {
         currentIndex++;
-        updateSlider(true); // smooth
+        updateSlider(true); 
     } else {
         currentIndex = 0;
-        updateSlider(false); // instant jump
+        updateSlider(false);
     }
 }
 
@@ -78,6 +78,7 @@ let autoplayDelay = 3500;
 let autoplayPaused = false;
 
 function startAutoplay() {
+    clearInterval(autoplayInterval);
     autoplayInterval = setInterval(() => {
         if (!autoplayPaused) {
             goNext();
