@@ -32,22 +32,22 @@ document.getElementById('addItemForm').addEventListener('submit', async (e) => {
       return; // stop if upload fails
     }
   } else {
-    // No file selected; you can decide to allow this or block it
-    // For now, allow it: photo_url will be empty or whatever default you set
+    // No file selected
     console.log('No photo selected, continuing without upload');
   }
 
-  // 2) Collect form data (now including photo_url)
+  //Collect form data 
   const form = new FormData(e.target);
   const body = Object.fromEntries(form.entries());
 
-  // Convert types
-  body.price = toCents(body.price);
-  body.available = parseInt(body.available, 10);
+  // No price handling
+    body.available = parseInt(body.available, 10);
+
+    delete body.price;
 
   console.log('Sending menu item:', body);
 
-  // 3) Send menu item to /menu
+  //Send menu item to /menu
   try {
     const res = await fetch('http://localhost:4000/menu', {
       method: 'POST',
