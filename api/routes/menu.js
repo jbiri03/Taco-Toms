@@ -1,3 +1,5 @@
+//used to send and retrieve server requests
+
 import express from 'express';
 import pool from '../db.js';
 
