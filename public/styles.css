@@ -805,4 +805,206 @@ body {
 
 .footer-bottom p { margin: 0; font-size: 0.95rem; color: #bbb; }
 
+/* ===== Layout for menu + title ===== */
 
+.menu-title {
+  text-align: left;
+  margin: 0;
+  padding: 7rem 0rem 0rem 7rem;
+  border-bottom: 15px solid var(--bg-dark);
+  background-color: var(--accent);
+  color: var(--text-light);
+}
+
+.menu-title h1 {
+  font-size: 5.5rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+
+/* Main menu layout: sidebar + content */
+.menu-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2.5rem;
+  align-items: flex-start;
+  padding: 2.5rem 3rem 3rem;
+}
+
+/* ===== Sidebar filter card ===== */
+
+.category-card {
+  background: #f3e7d8;
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 2rem;
+
+  /* shift it a bit to the right */
+  margin-left: 1.5rem;
+}
+
+.filter-label {
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+  color: #555;
+}
+
+.category-card h2 {
+  margin: 0 0 1.25rem;
+  font-size: 2rem;
+  letter-spacing: 0.04em;
+}
+
+/* Category buttons in sidebar */
+.category-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  margin: 0.35rem 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #444;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.category-btn:hover {
+  background: #e5d2be;
+}
+
+.category-btn.active {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ===== Right-side content and sections ===== */
+
+.menu-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.menu-category-section {
+  scroll-margin-top: 4rem;
+  margin-bottom: 4rem;
+}
+
+.menu-category-title {
+    margin: 0 0 1.5rem;
+    font-size: 3.5rem;
+    letter-spacing: 0.06em;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    font-weight: 1000;
+    
+}
+
+/* Optional subheading (e.g., "Tacos") inside Main */
+.menu-category-section h2 {
+    margin: 2rem 0 1rem;
+    font-size: 1.6rem;
+    letter-spacing: 0.04em;
+}
+
+/* ===== Text-only items (no image) ===== */
+
+.text-items {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 4rem;
+    margin-bottom: 2rem;
+    color: var(--text-dark);
+}
+
+.menu-text-item {
+    padding: 0;
+    background: transparent;
+    color: var(--text-dark);
+}
+
+.menu-text-item h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.menu-text-item p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    max-width: 38ch;
+}
+
+/* ===== Image items (cards) ===== */
+
+.image-items {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.menu-card {
+  background: var(--bg-dark);
+  border-radius: 22px;
+  overflow: hidden;
+  color: var(--text-light);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+.menu-card-body {
+  padding: 1rem 1.25rem;
+}
+
+.menu-card-body h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.2rem;
+}
+
+.menu-card-body p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #ddd;
+}
+
+/* ===== Responsive adjustments ===== */
+
+@media (max-width: 1000px) {
+  .menu-layout {
+    grid-template-columns: 1fr;
+    padding: 2rem 1.5rem 3rem;
+  }
+
+  .category-card {
+    position: static;
+    margin-left: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .text-items,
+  .image-items {
+    grid-template-columns: 1fr;
+  }
+
+  .menu-title h1 {
+    font-size: 2.4rem;
+  }
+}

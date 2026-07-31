@@ -31,7 +31,7 @@ router.post('/photo', upload.single('photo'), (req, res) => {
 
   res.json({
     message: 'Photo uploaded successfully',
-    filePath: 'uploads/' + req.file.filename
+    filePath: 'admin/uploads/' + req.file.filename
   });
 });
 

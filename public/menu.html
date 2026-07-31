@@ -20,79 +20,108 @@
                 <a href="#" class="nav-link">GALLERY</a>
                 <a href="#" class="nav-link">HOURS</a>
                 <a href="#" class="nav-link">CONTACT</a>
-                <a href="https://www.doordash.com/store/taco-tom's-vancouver-42143605/103741553/?event_type=autocomplete&pickup=false" target="_blank" rel="nofollow" class="nav-link nav-cta">Order Now</a>
+                <a href="https://www.doordash.com/store/taco-tom's-vancouver-42143605/103741553/?event_type=autocomplete&pickup=false"
+                   target="_blank" rel="nofollow" class="nav-link nav-cta">Order Now</a>
             </div>
         </nav>
     </header>
 
     <!-- MAIN SECTION -->
     <main id="top-of-page">
-        <section>
-            <h2>Main</h2>
-            <div id="main-items"></div>
-        </section>
+        <div class="menu-title">
+            <h1>MENU</h1>
+        </div>
+        <section class="menu-layout">
+            <aside class="category-card">
+                <p class="filter-label">Filter By:</p>
 
-        <section>
-            <h2>Sides</h2>
-            <div id="sides-items"></div>
-        </section>
+                <button class="category-btn active" data-target="main-section">Main</button>
+                <button class="category-btn" data-target="sides-section">Sides</button>
+                <button class="category-btn" data-target="drinks-section">Drinks</button>
+            </aside>
 
-        <section>
-            <h2>Drinks</h2>
-            <div id="drinks-items"></div>
-        </section>
+            <section class="menu-content">
+                <!-- MAIN ITEMS -->
+                <section id="main-section" class="menu-category-section" data-category="main">
+                    <h1 class="menu-category-title">Main</h1>
 
+                    <div class="image-items" id="main-image-items"></div>
+
+                    <h2>Tacos</h2>
+                    <div class="text-items" id="main-text-items"></div>
+                </section>
+
+                <!-- SIDE ITEMS -->
+                <section id="sides-section" class="menu-category-section" data-category="sides">
+                    <h1 class="menu-category-title">Sides</h1>
+                    
+                    <div class="image-items" id="sides-image-items"></div>
+                    <div class="text-items" id="sides-text-items"></div>
+
+                </section>
+
+                <!-- DRINK ITEMS -->
+                <section id="drinks-section" class="menu-category-section" data-category="drinks">
+                    <h1 class="menu-category-title">Drinks</h1>
+                    
+                    <div class="image-items" id="drinks-image-items"></div>
+                    <div class="text-items" id="drinks-text-items"></div>
+
+                </section>
+            </section>
+        </section>
     </main>
-        <!-- FOOTER -->
-        <footer class="site-footer">
-            <div class="footer-container">
-                <!-- Brand + contact -->
-                <div class="footer-col">
-                    <img src="images/contact_logo.png" alt="Taco Tom's logo with phone number" class="footer-logo">
-                    <p class="footer-tagline">Authentic Mexican food made fresh and served fast.</p>
-                    <p class="footer-address">
-                        13510 NE Fourth Plain Blvd<br>
-                        Vancouver, WA 98682
-                    </p>
-                    <a class="footer-phone" href="tel:+13602815386">(360) 381‑5386</a>
-                </div>
 
-                <!-- Quick links -->
-                <div class="footer-col">
-                    <h4 class="footer-heading">Quick Links</h4>
-                    <ul class="footer-links">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Menu</a></li>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Gallery</a></li>
-                        <li><a href="#">Hours</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
-                </div>
-
-                <!-- Hours + social -->
-                <div class="footer-col">
-                    <h4 class="footer-heading">Truck Hours</h4>
-                    <p class="footer-hours">
-                        Mon–Sat: 10:00 AM – 7:00 PM<br>
-                        Sun: Closed
-                    </p>
-                    <div class="footer-social">
-                        <a href="https://www.doordash.com/store/taco-tom's-vancouver-42143605/103741553/?event_type=autocomplete&pickup=false" target="_blank" rel="noopener">Order on DoorDash</a>
-                    </div>
-                </div>
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <!-- Brand + contact -->
+            <div class="footer-col">
+                <img src="images/contact_logo.png" alt="Taco Tom's logo with phone number" class="footer-logo">
+                <p class="footer-tagline">Authentic Mexican food made fresh and served fast.</p>
+                <p class="footer-address">
+                    13510 NE Fourth Plain Blvd<br>
+                    Vancouver, WA 98682
+                </p>
+                <a class="footer-phone" href="tel:+13602815386">(360) 381‑5386</a>
             </div>
 
-            <div class="footer-bottom">
-                <p>&copy; 2026 Taco Tom’s. All rights reserved.</p>
-                <a class="back-to-top" href="#top-of-page" aria-label="Back to top">
+            <!-- Quick links -->
+            <div class="footer-col">
+                <h4 class="footer-heading">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Menu</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Gallery</a></li>
+                    <li><a href="#">Hours</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- Hours + social -->
+            <div class="footer-col">
+                <h4 class="footer-heading">Truck Hours</h4>
+                <p class="footer-hours">
+                    Mon–Sat: 10:00 AM – 7:00 PM<br>
+                    Sun: Closed
+                </p>
+                <div class="footer-social">
+                    <a href="https://www.doordash.com/store/taco-tom's-vancouver-42143605/103741553/?event_type=autocomplete&pickup=false"
+                       target="_blank" rel="noopener">Order on DoorDash</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Taco Tom’s. All rights reserved.</p>
+            <a class="back-to-top" href="#top-of-page" aria-label="Back to top">
                 <span class="back-label">TOP</span>
             </a>
-            </div>
+        </div>
+    </footer>
 
-        </footer>
     <!-- SCRIPTS -->
-     <script src="scripts/menu.js"></script>
-
+    <script src="scripts/menu.js"></script>
 </body>
 </html>
