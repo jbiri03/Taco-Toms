@@ -5,7 +5,7 @@ document.getElementById('addItemForm').addEventListener('submit', async (e) => {
   const hiddenPhotoUrl = document.getElementById('photoUrl');
   const file = fileInput.files[0];
 
-  // 1) Upload photo first, if a file is selected
+  //Upload photo first, if a file is selected
   if (file) {
     const formData = new FormData();
     formData.append('photo', file);
@@ -42,7 +42,7 @@ document.getElementById('addItemForm').addEventListener('submit', async (e) => {
   const body = Object.fromEntries(form.entries());
 
   // Convert types
-  body.price = parseFloat(body.price);
+  body.price = toCents(body.price);
   body.available = parseInt(body.available, 10);
 
   console.log('Sending menu item:', body);
@@ -71,3 +71,9 @@ document.getElementById('addItemForm').addEventListener('submit', async (e) => {
     alert('Error submitting form');
   }
 });
+
+function toCents(value) {
+  const valueStr = value.toString().trim();
+  const numericValue = parseFloat(valueStr.replace(',', '.'));
+  return Math.round(numericValue * 100);
+}

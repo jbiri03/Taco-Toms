@@ -12,7 +12,7 @@ async function loadMenu() {
       <img src="admin/${item.photo_url}" alt="${item.name}">
       <h3>${item.name}</h3>
       <p>${item.description}</p>
-      <p>$${item.price}</p>
+      <span class="price">$${(item.price / 100).toFixed(2)}</span>
     `;
     menuDiv.appendChild(card);
   });
