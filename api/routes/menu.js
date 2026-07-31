@@ -1,9 +1,24 @@
-//used to send and retrieve server requests
-
+// routes/menu.js
 import express from 'express';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 import pool from '../db.js';
 
 const router = express.Router();
+
+// Multer setup (same as in upload.js)
+const uploadDir = path.join(process.cwd(), 'public', 'admin', 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
+});
+
+const upload = multer({ storage });
 
 // GET /menu — fetch all menu items
 router.get('/', async (req, res) => {
@@ -15,7 +30,6 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch menu items' });
   }
 });
-
 
 // POST /menu — add a new menu item
 router.post('/', async (req, res) => {
@@ -35,27 +49,46 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT /menu/:id — update a menu item
-router.put('/:id', async (req, res) => {
+// PUT /menu/:id — update a menu item (with optional photo upload)
+router.put('/:id', upload.single('photo'), async (req, res) => {
   const { id } = req.params;
-  const { name, description, price, category, photo_url, available } = req.body;
+  const { name, description, price, category, available } = req.body;
+
+  // If a photo is uploaded, use new photo_url; otherwise, keep existing
+  const newPhoto = req.file ? 'admin/uploads/' + req.file.filename : null;
 
   try {
-    const [result] = await pool.query(
-      `UPDATE menu_items
-       SET name = ?, description = ?, price = ?, category = ?, photo_url = ?, available = ?
-       WHERE id = ?`,
-      [name, description, price, category, photo_url, available, id]
-    );
+    if (newPhoto) {
+      const [result] = await pool.query(
+        `UPDATE menu_items
+         SET name = ?, description = ?, price = ?, category = ?, photo_url = ?, available = ?
+         WHERE id = ?`,
+        [name, description, price, category, newPhoto, available, id]
+      );
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'Menu item not found' });
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Menu item not found' });
+      }
+
+      return res.json({ message: 'Menu item updated successfully', photo_url: newPhoto });
+    } else {
+      // No new photo – keep existing photo_url
+      const [result] = await pool.query(
+        `UPDATE menu_items
+         SET name = ?, description = ?, price = ?, category = ?, available = ?
+         WHERE id = ?`,
+        [name, description, price, category, available, id]
+      );
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Menu item not found' });
+      }
+
+      return res.json({ message: 'Menu item updated successfully' });
     }
-
-    res.json({ message: 'Menu item updated successfully' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to update menu item' });
+    return res.status(500).json({ error: 'Failed to update menu item' });
   }
 });
 

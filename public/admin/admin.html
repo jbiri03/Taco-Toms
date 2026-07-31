@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin – Menu Items</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <main class="admin-main">
+    <section class="admin-header">
+      <h1>Menu Items</h1>
+      <a href="add-item.html" class="add-item-button">+ Add Item</a>
+    </section>
+
+    <section class="admin-menu-list">
+      <div id="menu-items-container"></div>
+    </section>
+
+    <!-- Edit popout modal -->
+    <div id="editModal" class="edit-modal hidden">
+      <div class="edit-modal-content">
+        <h2>Edit Menu Item</h2>
+        <form id="editForm">
+          <input type="hidden" name="id" id="edit-id">
+
+          <label>Name</label>
+          <input type="text" name="name" id="edit-name" required>
+
+          <label>Description</label>
+          <input type="text" name="description" id="edit-description">
+
+          <label for="edit-category">Category</label>
+          <select name="category" id="edit-category">
+            <option value="main">Main</option>
+            <option value="sides">Sides</option>
+            <option value="drinks">Drinks</option>
+          </select>
+
+          <label>Available</label>
+          <select name="available" id="edit-available">
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
+
+          <div class="edit-modal-actions">
+            <button type="submit">Save Changes</button>
+            <button type="button" id="editCancel">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <p>&copy; 2026 Taco Tom’s. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script src="scripts/admin.js"></script>
+</body>
+</html>

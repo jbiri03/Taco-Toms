@@ -1,79 +1,144 @@
-document.getElementById('addItemForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
+let adminItems = [];
 
-  const fileInput = document.getElementById('photoInput');
-  const hiddenPhotoUrl = document.getElementById('photoUrl');
-  const file = fileInput.files[0];
+document.addEventListener('DOMContentLoaded', () => {
+  loadMenuAdmin();
 
-  //Upload photo first, if a file is selected
-  if (file) {
-    const formData = new FormData();
-    formData.append('photo', file);
+  const editForm = document.getElementById('editForm');
+  const editCancel = document.getElementById('editCancel');
 
-    try {
-      const res = await fetch('http://localhost:4000/upload/photo', {
-        method: 'POST',
-        body: formData
-      });
+  editForm.addEventListener('submit', onEditSubmit);
+  editCancel.addEventListener('click', () => {
+    document.getElementById('editModal').classList.add('hidden');
+  });
+});
 
-      const data = await res.json();
-      console.log('Upload response:', data);
-
-      if (!res.ok) {
-        alert('Upload failed: ' + (data.error || 'Unknown error'));
-        return; // stop if upload fails
-      }
-
-      // Save file path into hidden field so it’s included in the form data
-      hiddenPhotoUrl.value = data.filePath;
-    } catch (err) {
-      console.error('Upload error:', err);
-      alert('Error uploading photo');
-      return; // stop if upload fails
-    }
-  } else {
-    // No file selected
-    console.log('No photo selected, continuing without upload');
-  }
-
-  //Collect form data 
-  const form = new FormData(e.target);
-  const body = Object.fromEntries(form.entries());
-
-  // No price handling
-    body.available = parseInt(body.available, 10);
-
-    delete body.price;
-
-  console.log('Sending menu item:', body);
-
-  //Send menu item to /menu
+async function loadMenuAdmin() {
   try {
-    const res = await fetch('http://localhost:4000/menu', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+    const res = await fetch('http://localhost:4000/menu');
+    adminItems = await res.json();
+
+    const container = document.getElementById('menu-items-container');
+    container.innerHTML = '';
+
+    adminItems.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'menu-item-row';
+
+      const availableChecked = item.available ? 'checked' : '';
+      const categoryLabel =
+        item.category.charAt(0).toUpperCase() + item.category.slice(1);
+
+      row.innerHTML = `
+        <div class="menu-item-info">
+          ${item.photo_url ? `<img src="../${item.photo_url}" alt="${item.name}" class="menu-item-thumb">` : ''}
+          <span class="menu-item-name">${item.name}</span>
+          <span class="menu-item-category">${categoryLabel}</span>
+          <label class="menu-item-available">
+            <input type="checkbox"
+                   class="availability-toggle"
+                   data-id="${item.id}"
+                   ${availableChecked}>
+            Available
+          </label>
+        </div>
+        <div class="menu-item-actions">
+          <button class="edit-button" data-id="${item.id}">Edit</button>
+          <button class="delete-button" data-id="${item.id}">Delete</button>
+        </div>
+      `;
+
+      container.appendChild(row);
     });
 
-    const data = await res.json();
-    console.log('Server response:', data);
+    // Wire up events
+    container.querySelectorAll('.availability-toggle').forEach(cb => {
+      cb.addEventListener('change', onAvailabilityChange);
+    });
+
+    container.querySelectorAll('.edit-button').forEach(btn => {
+      btn.addEventListener('click', onEditClick);
+    });
+
+    container.querySelectorAll('.delete-button').forEach(btn => {
+      btn.addEventListener('click', onDeleteClick);
+    });
+  } catch (err) {
+    console.error('Error loading admin menu:', err);
+  }
+}
+
+async function onAvailabilityChange(e) {
+  const checkbox = e.target;
+  const id = checkbox.dataset.id;
+  const newAvailable = checkbox.checked ? 1 : 0;
+
+  try {
+    await fetch(`http://localhost:4000/menu/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ available: newAvailable })
+    });
+  } catch (err) {
+    console.error('Error updating availability:', err);
+  }
+}
+
+function onEditClick(e) {
+  const id = Number(e.target.dataset.id);
+  const item = adminItems.find(i => i.id === id);
+  if (!item) return;
+
+  // Fill modal fields
+  document.getElementById('edit-id').value = item.id;
+  document.getElementById('edit-name').value = item.name || '';
+  document.getElementById('edit-description').value = item.description || '';
+  document.getElementById('edit-category').value = item.category || 'main';
+  document.getElementById('edit-available').value = item.available ? '1' : '0';
+
+  // Show modal
+  document.getElementById('editModal').classList.remove('hidden');
+}
+
+async function onEditSubmit(e) {
+  e.preventDefault();
+
+  const id = document.getElementById('edit-id').value;
+  const name = document.getElementById('edit-name').value;
+  const description = document.getElementById('edit-description').value;
+  const category = document.getElementById('edit-category').value;
+  const available = parseInt(document.getElementById('edit-available').value, 10);
+
+  try {
+    const res = await fetch(`http://localhost:4000/menu/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, description, category, available })
+    });
 
     if (!res.ok) {
-      alert('Failed to add item: ' + (data.error || 'Unknown error'));
+      const data = await res.json();
+      alert('Failed to update item: ' + (data.error || 'Unknown error'));
       return;
     }
 
-    alert('Item added!');
-    e.target.reset();
-    hiddenPhotoUrl.value = ''; // clear hidden field
+    document.getElementById('editModal').classList.add('hidden');
+    loadMenuAdmin();
   } catch (err) {
-    console.error('Submit error:', err);
-    alert('Error submitting form');
+    console.error('Error updating item:', err);
+    alert('Error updating item');
   }
-});
+}
 
-function toCents(value) {
-  const valueStr = value.toString().trim();
-  const numericValue = parseFloat(valueStr.replace(',', '.'));
-  return Math.round(numericValue * 100);
+async function onDeleteClick(e) {
+  const id = e.target.dataset.id;
+  if (!confirm('Delete this menu item?')) return;
+
+  try {
+    await fetch(`http://localhost:4000/menu/${id}`, {
+      method: 'DELETE'
+    });
+    loadMenuAdmin();
+  } catch (err) {
+    console.error('Error deleting item:', err);
+  }
 }

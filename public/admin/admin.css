@@ -1,0 +1,109 @@
+.admin-main {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.add-item-button {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: none;
+  background: #e11d48;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.admin-menu-list {
+  border-top: 1px solid #ddd;
+}
+
+.menu-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.menu-item-info {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.menu-item-thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.menu-item-name {
+  font-weight: 600;
+}
+
+.menu-item-category {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.menu-item-actions button {
+  margin-left: 0.5rem;
+}
+
+/* Modal */
+
+.edit-modal.hidden {
+  display: none;
+}
+
+.edit-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.edit-modal-content {
+  background: #fff;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.edit-modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.edit-modal-content label {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.edit-modal-content input,
+.edit-modal-content select {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.edit-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
