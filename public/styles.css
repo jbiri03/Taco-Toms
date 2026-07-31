@@ -171,7 +171,7 @@ html {
 body {
     font-family: Arial, sans-serif;
     color: var(--text-dark);
-    background-color: #f7efe8;
+    background-color: var(--text-light);
     line-height: 1.6;
     margin: 0;
 }
@@ -848,7 +848,7 @@ body {
 }
 
 .filter-label {
-  font-size: 0.9rem;
+  font-size: 1rem;
   margin: 0 0 0.5rem;
   color: #555;
 }
@@ -870,7 +870,7 @@ body {
   border-radius: 999px;
   background: transparent;
   color: #444;
-  font-size: 1rem;
+  font-size: 1.3rem;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
@@ -891,6 +891,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 3rem;
+  margin-left: 3rem;
 }
 
 .menu-category-section {
@@ -899,14 +900,23 @@ body {
 }
 
 .menu-category-title {
-    margin: 0 0 1.5rem;
+    margin: 0 0 0.3rem;
     font-size: 3.5rem;
-    letter-spacing: 0.06em;
+    /* letter-spacing: 0.06em; */
     color: var(--text-dark);
     text-transform: uppercase;
     font-weight: 1000;
+    padding-bottom: 0;
     
 }
+
+.menu-category-description {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    margin: -0.5rem 0 2rem;   /* pulls it closer to the title */
+    line-height: 1.55;
+}
+
 
 /* Optional subheading (e.g., "Tacos") inside Main */
 .menu-category-section h2 {
@@ -932,16 +942,19 @@ body {
 }
 
 .menu-text-item h3 {
-  margin: 0 0 0.75rem;
-  font-size: 1.6rem;
-  font-weight: 700;
+    margin: 0rem 0rem 0.5rem 0rem;
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-transform: capitalize;
 }
 
 .menu-text-item p {
     margin: 0;
     font-size: 1rem;
     line-height: 1.5;
-    max-width: 38ch;
+    max-width: 40ch;
+    color: var(--text-muted);
+
 }
 
 /* ===== Image items (cards) ===== */
@@ -951,7 +964,10 @@ body {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
+    text-transform: capitalize;
+
 }
+
 
 .menu-card {
   background: var(--bg-dark);
@@ -961,13 +977,28 @@ body {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
+
+
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
+
 
 .menu-card img {
   width: 100%;
   height: 220px;
   object-fit: cover;
   display: block;
+
+  transition: transform 0.2s ease;
+}
+
+.menu-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+}
+
+.menu-card:hover img {
+  transform: scale(1.04);
 }
 
 .menu-card-body {
