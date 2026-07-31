@@ -1,0 +1,72 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# Prisma (you usually commit migrations; keep the migrations folder if you want history)
+# Ignore the generated client and engine cache (safe to ignore)
+prisma/client/
+.prisma/
+prisma/.env   # in case prisma created a local env (optional)
+
+# Build / runtime outputs (frontend & backend)
+dist/
+build/
+.next/
+.out/
+.vite/
+.public/build/
+admin/dist/
+public/dist/
+
+# Uploaded files (if you ever save uploads locally)
+uploads/
+tmp/
+temp/
+
+# Logs
+logs/
+*.log
+logs/*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Mac / Linux swap / thumbnail files
+*.swp
+*~
+
+# Test / coverage
+coverage/
+.nyc_output/
+
+# Misc
+*.pem
+*.key
+*.crt
+
+# Cert files, local debug files
+certs/
+local-ssl/
+
+# Optional: if you add Docker
+docker-compose.override.yml
+.env.docker
+
+# Optional: avoid committing large binaries
+*.zip
+*.tar.gz
+*.tgz
