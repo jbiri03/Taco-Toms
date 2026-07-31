@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <!-- <link rel="stylesheet" href="admin.css"> -->
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navigation">
+        </nav>
+    </header>
+
+    <!-- MAIN SECTION -->
+    <main>
+        <!-- ADD MENU ITEMS -->
+        <h1>Add New Menu Item</h1>
+
+        <form id="addItemForm">
+
+            <label>Name</label>
+            <input type="text" name="name">
+
+            <label>Description</label>
+            <input type="text" name="description">
+
+            <label>Price</label>
+            <input type="number" name="price" step="0.01">
+
+            <label>Category</label>
+            <input type="text" name="category">
+
+            <label>Available</label>
+            <select name="available">
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+            </select>
+
+            <label>Photo</label>
+            <input type="file" id="photoInput">
+
+            <!-- Hidden field -->
+            <input type="hidden" name="photo_url" id="photoUrl">
+
+            <button type="button" onclick="uploadPhoto()">Upload Photo</button>
+
+            <button>Add Item</button>
+        </form>
+    </main>
+        <!-- FOOTER -->
+        <footer class="site-footer">
+
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Taco Tom’s. All rights reserved.</p>
+            </div>
+        </footer>
+    <!-- SCRIPTS -->
+     <script src="scripts/admin.js"></script>
+
+</body>
+</html>
