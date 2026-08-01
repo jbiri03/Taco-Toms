@@ -8,10 +8,50 @@
 </head>
 <body>
   <main class="admin-main">
+    <div class="admin-header">
+      <h1>Admin Dashboard</h1>
+    </div>
+     <!-- ADD MENU ITEMS -->
+    <h1>Add New Menu Item</h1>
+
+    <form id="addItemForm">
+
+        <label>Name</label>
+        <input type="text" name="name" required>
+
+        <label>Description</label>
+        <input type="text" name="description">
+
+        <!-- <label>Price</label>
+        <input type="number" name="price" step="0.01"> -->
+
+        <label for="category">Category</label>
+        <select name="category" id="category">
+            <option value="main">Main</option>
+            <option value="sides">Sides</option>
+            <option value="drinks">Drinks</option>
+        </select>
+
+        <label>Available</label>
+        <select name="available">
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+        </select>
+
+
+        <label>Photo</label>
+        <input type="file" id="photoInput">
+
+        <!-- Hidden field -->
+        <input type="hidden" name="photo_url" id="photoUrl">
+
+
+        <button>Add Item</button>
+    </form>
     <section class="admin-header">
       <h1>Menu Items</h1>
-      <a href="add-item.html" class="add-item-button">+ Add Item</a>
     </section>
+    
 
     <section class="admin-menu-list">
       <div id="menu-items-container"></div>
@@ -62,6 +102,7 @@
   </footer>
 
   <!-- SCRIPTS -->
+  <script src="scripts/add.js"></script>
   <script src="scripts/admin.js"></script>
 </body>
 </html>
