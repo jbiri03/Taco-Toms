@@ -30,7 +30,7 @@ app.use(express.static(publicPath));
 // Session
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || 'change_this_to_a_random_string',
+    secret: process.env.SESSION_SECRET, //can add secret fallback here
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -93,8 +93,8 @@ app.get('/admin/admin.html', requireAuth, (req, res) => {
 });
 
 // Protected API routes
-app.use('/menu', requireAuth, menuRoutes);
-app.use('/upload', requireAuth, uploadRoutes);
+app.use('/menu', menuRoutes);
+app.use('/upload', uploadRoutes);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
