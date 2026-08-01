@@ -20,7 +20,7 @@ document.getElementById('addItemForm').addEventListener('submit', async (e) => {
       console.log('Upload response:', data);
 
       if (!res.ok) {
-        alert('Upload failed: ' + (data.error || 'Unknown error'));
+        showToast('Upload failed: ' + (data.error || 'Unknown error'));
         return; // stop if upload fails
       }
 
@@ -28,7 +28,7 @@ document.getElementById('addItemForm').addEventListener('submit', async (e) => {
       hiddenPhotoUrl.value = data.filePath;
     } catch (err) {
       console.error('Upload error:', err);
-      alert('Error uploading photo');
+      showToast('Error uploading photo');
       return; // stop if upload fails
     }
   } else {
@@ -59,7 +59,7 @@ document.getElementById('addItemForm').addEventListener('submit', async (e) => {
     console.log('Server response:', data);
 
     if (!res.ok) {
-      alert('Failed to add item: ' + (data.error || 'Unknown error'));
+      showToast('Failed to add item: ' + (data.error || 'Unknown error'));
       return;
     }
 

@@ -137,7 +137,7 @@ async function onEditSubmit(e) {
 
     if (!res.ok) {
       const data = await res.json();
-      alert('Failed to update item: ' + (data.error || 'Unknown error'));
+      showToast('Failed to update item: ' + (data.error || 'Unknown error'));
       return;
     }
 
@@ -145,7 +145,7 @@ async function onEditSubmit(e) {
     loadMenuAdmin();
   } catch (err) {
     console.error('Error updating item:', err);
-    alert('Error updating item');
+    showToast('Error updating item');
   }
 }
 
@@ -163,3 +163,47 @@ async function onDeleteClick(e) {
   }
 }
 
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.remove('hidden');
+  toast.classList.add('show');
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.classList.add('hidden'), 300);
+  }, 2000);
+}
+
+let deleteId = null;
+
+async function onDeleteClick(e) {
+  deleteId = e.target.dataset.id;
+
+  const banner = document.getElementById('deleteBanner');
+  banner.classList.add('show');
+}
+
+document.getElementById('bannerCancel').addEventListener('click', () => {
+  deleteId = null;
+  document.getElementById('deleteBanner').classList.remove('show');
+});
+
+document.getElementById('bannerConfirm').addEventListener('click', async () => {
+  if (!deleteId) return;
+
+  try {
+    await fetch(`http://localhost:4000/menu/${deleteId}`, {
+      method: 'DELETE'
+    });
+
+    showToast('Item deleted');
+    loadMenuAdmin(); // refresh cards
+  } catch (err) {
+    console.error('Error deleting item:', err);
+    showToast('Error deleting item');
+  }
+
+  deleteId = null;
+  document.getElementById('deleteBanner').classList.remove('show');
+});

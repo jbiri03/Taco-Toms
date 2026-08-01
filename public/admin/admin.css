@@ -419,3 +419,50 @@ body {
 .toast.hidden {
   display: none;
 }
+
+.delete-banner {
+  position: fixed;
+  top: -80px;
+  left: 0;
+  right: 0;
+  background: rgba(239, 68, 68, 0.9); /* red danger */
+  backdrop-filter: blur(8px);
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: top 0.35s ease;
+  z-index: 9999;
+}
+
+.delete-banner.show {
+  top: 0;
+}
+
+.banner-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+#bannerConfirm {
+  background: white;
+  color: #ef4444;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#bannerCancel {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
