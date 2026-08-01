@@ -20,38 +20,41 @@ async function loadMenuAdmin() {
     const container = document.getElementById('menu-items-container');
     container.innerHTML = '';
 
-    adminItems.forEach(item => {
-      const row = document.createElement('div');
-      row.className = 'menu-item-row';
+adminItems.forEach(item => {
+  const row = document.createElement('div');
+  row.className = 'menu-item-row';
 
-      const availableChecked = item.available ? 'checked' : '';
-      const categoryLabel =
-        item.category.charAt(0).toUpperCase() + item.category.slice(1);
+  const availableChecked = item.available ? 'checked' : '';
+  const categoryLabel =
+    item.category.charAt(0).toUpperCase() + item.category.slice(1);
 
-      row.innerHTML = `
-        <div class="menu-item-info">
-          ${item.photo_url ? `<img src="../${item.photo_url}" alt="${item.name}" class="menu-item-thumb">` : ''}
-          <div class="menu-item-text">
-            <span class="menu-item-name">${item.name}</span>
-            <span class="menu-item-description">${item.description || ''}</span>
-            <span class="menu-item-category">${categoryLabel}</span>
-          </div>
-          <label class="menu-item-available">
-            <input type="checkbox"
-                   class="availability-toggle"
-                   data-id="${item.id}"
-                   ${availableChecked}>
-            Available
-          </label>
-        </div>
-        <div class="menu-item-actions">
-          <button class="edit-button" data-id="${item.id}">Edit</button>
-          <button class="delete-button" data-id="${item.id}">Delete</button>
-        </div>
-      `;
+  row.innerHTML = `
+    ${item.photo_url
+      ? `<img src="../${item.photo_url}" alt="${item.name}" class="menu-item-thumb">`
+      : `<div class="menu-item-no-image">No Image</div>`
+    }
+    <div class="menu-item-main">
+      <div class="menu-item-name">${item.name}</div>
+      <div class="menu-item-description">${item.description || ''}</div>
+      <div class="menu-item-category">${categoryLabel}</div>
+    </div>
+    <div style="display:flex; align-items:center; gap:0.75rem;">
+      <label class="menu-item-available">
+        <input type="checkbox"
+               class="availability-toggle"
+               data-id="${item.id}"
+               ${availableChecked}>
+        <span class="menu-item-available-text">Available</span>
+      </label>
+      <div class="menu-item-actions">
+        <button class="edit-button" data-id="${item.id}">Edit</button>
+        <button class="delete-button" data-id="${item.id}">Delete</button>
+      </div>
+    </div>
+  `;
 
-      container.appendChild(row);
-    });
+  container.appendChild(row);
+});
 
     // Wire up events
     container.querySelectorAll('.availability-toggle').forEach(cb => {

@@ -7,37 +7,29 @@
   <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-  <main class="admin-main">
-    <div class="admin-header">
-      <h1>Admin Dashboard</h1>
-    </div>
-     <!-- ADD MENU ITEMS -->
-    <h1>Add New Menu Item</h1>
-
-    <form id="addItemForm">
-
+  <div class="admin-layout">
+    <!-- Left sidebar: Add Item -->
+    <aside class="admin-sidebar">
+      <h2>Add New Menu Item</h2>
+      <form id="addItemForm">
         <label>Name</label>
         <input type="text" name="name" required>
 
         <label>Description</label>
         <input type="text" name="description">
 
-        <!-- <label>Price</label>
-        <input type="number" name="price" step="0.01"> -->
-
         <label for="category">Category</label>
         <select name="category" id="category">
-            <option value="main">Main</option>
-            <option value="sides">Sides</option>
-            <option value="drinks">Drinks</option>
+          <option value="main">Main</option>
+          <option value="sides">Sides</option>
+          <option value="drinks">Drinks</option>
         </select>
 
         <label>Available</label>
         <select name="available">
-        <option value="1">Yes</option>
-        <option value="0">No</option>
+          <option value="1">Yes</option>
+          <option value="0">No</option>
         </select>
-
 
         <label>Photo</label>
         <input type="file" id="photoInput">
@@ -45,55 +37,58 @@
         <!-- Hidden field -->
         <input type="hidden" name="photo_url" id="photoUrl">
 
+        <button type="submit">Add Item</button>
+      </form>
+    </aside>
 
-        <button>Add Item</button>
-    </form>
-    <section class="admin-header">
-      <h1>Menu Items</h1>
-    </section>
-    
+    <!-- Right main: Menu list -->
+    <main class="admin-content">
+      <header class="admin-header">
+        <h1>Menu Items</h1>
+      </header>
 
-    <section class="admin-menu-list">
-      <div id="menu-items-container"></div>
-    </section>
+      <section class="admin-menu-list">
+        <div id="menu-items-container"></div>
+      </section>
+    </main>
+  </div>
 
-    <!-- Edit popout modal -->
-    <div id="editModal" class="edit-modal hidden">
-      <div class="edit-modal-content">
-        <h2>Edit Menu Item</h2>
-        <form id="editForm">
-          <input type="hidden" name="id" id="edit-id">
+  <!-- Edit popout modal -->
+  <div id="editModal" class="edit-modal hidden">
+    <div class="edit-modal-content">
+      <h2>Edit Menu Item</h2>
+      <form id="editForm">
+        <input type="hidden" name="id" id="edit-id">
 
-          <label>Name</label>
-          <input type="text" name="name" id="edit-name" required>
+        <label>Name</label>
+        <input type="text" name="name" id="edit-name" required>
 
-          <label>Description</label>
-          <input type="text" name="description" id="edit-description">
+        <label>Description</label>
+        <input type="text" name="description" id="edit-description">
 
-          <label for="edit-category">Category</label>
-          <select name="category" id="edit-category">
-            <option value="main">Main</option>
-            <option value="sides">Sides</option>
-            <option value="drinks">Drinks</option>
-          </select>
+        <label for="edit-category">Category</label>
+        <select name="category" id="edit-category">
+          <option value="main">Main</option>
+          <option value="sides">Sides</option>
+          <option value="drinks">Drinks</option>
+        </select>
 
-          <label>Available</label>
-          <select name="available" id="edit-available">
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-          </select>
+        <label>Available</label>
+        <select name="available" id="edit-available">
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
 
-          <label>Photo</label>
-          <input type="file" name="photo" id="edit-photo" accept="image/*">
+        <label>Photo</label>
+        <input type="file" name="photo" id="edit-photo" accept="image/*">
 
-          <div class="edit-modal-actions">
-            <button type="submit">Save Changes</button>
-            <button type="button" id="editCancel">Cancel</button>
-          </div>
-        </form>
-      </div>
+        <div class="edit-modal-actions">
+          <button type="submit">Save Changes</button>
+          <button type="button" id="editCancel">Cancel</button>
+        </div>
+      </form>
     </div>
-  </main>
+  </div>
 
   <footer class="site-footer">
     <div class="footer-bottom">
