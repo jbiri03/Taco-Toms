@@ -23,7 +23,7 @@ const upload = multer({ storage });
 // GET /menu — fetch all menu items (used by admin)
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM menu_items');
+    const [rows] = await pool.query('SELECT * FROM menu_items ORDER BY category, name');
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
 router.get('/public', async (req, res) => {
   try {
     const [rows] = await pool.query(
-      'SELECT * FROM menu_items WHERE available = TRUE'
+      'SELECT * FROM menu_items WHERE available = TRUE ORDER BY category, name'
     );
     res.json(rows);
   } catch (err) {
