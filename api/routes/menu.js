@@ -20,10 +20,23 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// GET /menu — fetch all menu items
+// GET /menu — fetch all menu items (used by admin)
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM menu_items WHERE available = TRUE');
+    const [rows] = await pool.query('SELECT * FROM menu_items');
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch menu items' });
+  }
+});
+
+// GET /menu/public — fetch only available items (used by public UI)
+router.get('/public', async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      'SELECT * FROM menu_items WHERE available = TRUE'
+    );
     res.json(rows);
   } catch (err) {
     console.error(err);

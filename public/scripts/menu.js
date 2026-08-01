@@ -1,6 +1,6 @@
 async function loadMenu() {
   try {
-    const res = await fetch('http://localhost:4000/menu');
+    const res = await fetch('http://localhost:4000/menu/public');
     const items = await res.json();
 
     const mains = items.filter(item => item.category === 'main');
