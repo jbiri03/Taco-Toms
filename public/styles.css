@@ -916,6 +916,7 @@ body {
     margin: -0.5rem 0 2rem;   /* pulls it closer to the title */
     line-height: 1.55;
     text-transform: none;
+    letter-spacing: 0.05em;
 }
 
 
@@ -955,6 +956,7 @@ body {
     line-height: 1.5;
     max-width: 40ch;
     color: var(--text-muted);
+    letter-spacing: 0.04em; /* description spacing for readability */
 
 }
 
