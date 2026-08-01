@@ -31,8 +31,11 @@ async function loadMenuAdmin() {
       row.innerHTML = `
         <div class="menu-item-info">
           ${item.photo_url ? `<img src="../${item.photo_url}" alt="${item.name}" class="menu-item-thumb">` : ''}
-          <span class="menu-item-name">${item.name}</span>
-          <span class="menu-item-category">${categoryLabel}</span>
+          <div class="menu-item-text">
+            <span class="menu-item-name">${item.name}</span>
+            <span class="menu-item-description">${item.description || ''}</span>
+            <span class="menu-item-category">${categoryLabel}</span>
+          </div>
           <label class="menu-item-available">
             <input type="checkbox"
                    class="availability-toggle"
@@ -95,6 +98,9 @@ function onEditClick(e) {
   document.getElementById('edit-category').value = item.category || 'main';
   document.getElementById('edit-available').value = item.available ? '1' : '0';
 
+  // Clear file input (can't prefill, and we don't want to keep old file in memory)
+  document.getElementById('edit-photo').value = '';
+
   // Show modal
   document.getElementById('editModal').classList.remove('hidden');
 }
@@ -107,12 +113,22 @@ async function onEditSubmit(e) {
   const description = document.getElementById('edit-description').value;
   const category = document.getElementById('edit-category').value;
   const available = parseInt(document.getElementById('edit-available').value, 10);
+  const photoInput = document.getElementById('edit-photo');
+
+  const formData = new FormData();
+  formData.append('name', name);
+  formData.append('description', description);
+  formData.append('category', category);
+  formData.append('available', available);
+
+  if (photoInput.files[0]) {
+    formData.append('photo', photoInput.files[0]);
+  }
 
   try {
     const res = await fetch(`http://localhost:4000/menu/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, description, category, available })
+      body: formData
     });
 
     if (!res.ok) {
