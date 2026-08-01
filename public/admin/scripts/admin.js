@@ -94,7 +94,7 @@ async function onAvailabilityChange(e) {
   const newAvailable = checkbox.checked ? 1 : 0;
 
   try {
-    const res = await fetch(`/menu/${id}`, {
+    const res = await fetch(`/menu/${id}/availability`, {
       method: 'PUT',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -102,7 +102,8 @@ async function onAvailabilityChange(e) {
     });
 
     if (!res.ok) {
-      console.error('Failed to update availability');
+      const data = await res.json();
+      console.error('Failed to update availability', data);
       showToast('Failed to update availability');
     }
   } catch (err) {
