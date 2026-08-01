@@ -76,11 +76,12 @@ async function onAvailabilityChange(e) {
   const newAvailable = checkbox.checked ? 1 : 0;
 
   try {
-    await fetch(`http://localhost:4000/menu/${id}`, {
+    await fetch(`http://localhost:4000/menu/${id}/availability`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ available: newAvailable })
     });
+
   } catch (err) {
     console.error('Error updating availability:', err);
   }

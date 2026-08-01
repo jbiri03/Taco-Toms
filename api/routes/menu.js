@@ -62,6 +62,29 @@ router.post('/', async (req, res) => {
   }
 });
 
+// PUT /menu/:id/availability — update availability of a menu item
+router.put('/:id/availability', async (req, res) => {
+  const { id } = req.params;
+  const { available } = req.body;
+
+  try {
+    const [result] = await pool.query(
+      `UPDATE menu_items SET available = ? WHERE id = ?`,
+      [available, id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Menu item not found' });
+    }
+
+    res.json({ message: 'Availability updated' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update availability' });
+  }
+});
+
+
 // PUT /menu/:id — update a menu item (with optional photo upload)
 router.put('/:id', upload.single('photo'), async (req, res) => {
   const { id } = req.params;
