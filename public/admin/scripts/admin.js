@@ -36,7 +36,7 @@ adminItems.forEach(item => {
     <div class="menu-item-main">
       <div class="menu-item-name">${item.name}</div>
       <div class="menu-item-description">${item.description || ''}</div>
-      <div class="menu-item-category">${categoryLabel}</div>
+      <div class="menu-item-category">Category: ${categoryLabel}</div>
     </div>
     <div style="display:flex; align-items:center; gap:0.75rem;">
       <label class="menu-item-available">
