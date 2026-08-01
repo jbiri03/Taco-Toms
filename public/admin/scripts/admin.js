@@ -5,56 +5,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const editForm = document.getElementById('editForm');
   const editCancel = document.getElementById('editCancel');
+  const logoutBtn = document.getElementById('logoutBtn');
 
   editForm.addEventListener('submit', onEditSubmit);
   editCancel.addEventListener('click', () => {
     document.getElementById('editModal').classList.add('hidden');
   });
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', handleLogout);
+  }
 });
 
 async function loadMenuAdmin() {
   try {
-    const res = await fetch('http://localhost:4000/menu');
+    const res = await fetch('/menu', { credentials: 'include' });
+    if (!res.ok) {
+      if (res.status === 401) {
+        // Not logged in → redirect to login
+        window.location.href = '/admin/admin-login.html';
+        return;
+      }
+      throw new Error('Failed to load menu');
+    }
+
     adminItems = await res.json();
 
     const container = document.getElementById('menu-items-container');
     container.innerHTML = '';
 
-adminItems.forEach(item => {
-  const row = document.createElement('div');
-  row.className = 'menu-item-row';
+    adminItems.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'menu-item-row';
 
-  const availableChecked = item.available ? 'checked' : '';
-  const categoryLabel =
-    item.category.charAt(0).toUpperCase() + item.category.slice(1);
+      const availableChecked = item.available ? 'checked' : '';
+      const categoryLabel =
+        item.category.charAt(0).toUpperCase() + item.category.slice(1);
 
-  row.innerHTML = `
-    ${item.photo_url
-      ? `<img src="../${item.photo_url}" alt="${item.name}" class="menu-item-thumb">`
-      : `<div class="menu-item-no-image">No Image</div>`
-    }
-    <div class="menu-item-main">
-      <div class="menu-item-name">${item.name}</div>
-      <div class="menu-item-description">${item.description || ''}</div>
-      <div class="menu-item-category">Category: ${categoryLabel}</div>
-    </div>
-    <div style="display:flex; align-items:center; gap:0.75rem;">
-      <label class="menu-item-available">
-        <input type="checkbox"
-               class="availability-toggle"
-               data-id="${item.id}"
-               ${availableChecked}>
-        <span class="menu-item-available-text">Available</span>
-      </label>
-      <div class="menu-item-actions">
-        <button class="edit-button" data-id="${item.id}">Edit</button>
-        <button class="delete-button" data-id="${item.id}">Delete</button>
-      </div>
-    </div>
-  `;
+      row.innerHTML = `
+        ${item.photo_url
+          ? `<img src="../${item.photo_url}" alt="${item.name}" class="menu-item-thumb">`
+          : `<div class="menu-item-no-image">No Image</div>`
+        }
+        <div class="menu-item-main">
+          <div class="menu-item-name">${item.name}</div>
+          <div class="menu-item-description">${item.description || ''}</div>
+          <div class="menu-item-category">Category: ${categoryLabel}</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <label class="menu-item-available">
+            <input type="checkbox"
+                   class="availability-toggle"
+                   data-id="${item.id}"
+                   ${availableChecked}>
+            <span class="menu-item-available-text">Available</span>
+          </label>
+          <div class="menu-item-actions">
+            <button class="edit-button" data-id="${item.id}">Edit</button>
+            <button class="delete-button" data-id="${item.id}">Delete</button>
+          </div>
+        </div>
+      `;
 
-  container.appendChild(row);
-});
+      container.appendChild(row);
+    });
 
     // Wire up events
     container.querySelectorAll('.availability-toggle').forEach(cb => {
@@ -70,6 +84,7 @@ adminItems.forEach(item => {
     });
   } catch (err) {
     console.error('Error loading admin menu:', err);
+    showToast('Error loading menu items');
   }
 }
 
@@ -79,14 +94,20 @@ async function onAvailabilityChange(e) {
   const newAvailable = checkbox.checked ? 1 : 0;
 
   try {
-    await fetch(`http://localhost:4000/menu/${id}/availability`, {
+    const res = await fetch(`/menu/${id}`, {
       method: 'PUT',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ available: newAvailable })
     });
 
+    if (!res.ok) {
+      console.error('Failed to update availability');
+      showToast('Failed to update availability');
+    }
   } catch (err) {
     console.error('Error updating availability:', err);
+    showToast('Error updating availability');
   }
 }
 
@@ -102,7 +123,7 @@ function onEditClick(e) {
   document.getElementById('edit-category').value = item.category || 'main';
   document.getElementById('edit-available').value = item.available ? '1' : '0';
 
-  // Clear file input (can't prefill, and we don't want to keep old file in memory)
+  // Clear file input
   document.getElementById('edit-photo').value = '';
 
   // Show modal
@@ -130,8 +151,9 @@ async function onEditSubmit(e) {
   }
 
   try {
-    const res = await fetch(`http://localhost:4000/menu/${id}`, {
+    const res = await fetch(`/menu/${id}`, {
       method: 'PUT',
+      credentials: 'include',
       body: formData
     });
 
@@ -143,28 +165,89 @@ async function onEditSubmit(e) {
 
     document.getElementById('editModal').classList.add('hidden');
     loadMenuAdmin();
+    showToast('Item updated');
   } catch (err) {
     console.error('Error updating item:', err);
     showToast('Error updating item');
   }
 }
 
-async function onDeleteClick(e) {
-  const id = e.target.dataset.id;
-  if (!confirm('Delete this menu item?')) return;
+let deleteId = null;
 
+function onDeleteClick(e) {
+  deleteId = e.target.dataset.id;
+
+  const banner = document.getElementById('deleteBanner');
+  if (banner) {
+    banner.classList.add('show');
+  } else {
+    // Fallback if no banner: simple confirm
+    if (!confirm('Delete this menu item?')) {
+      deleteId = null;
+      return;
+    }
+    performDelete(deleteId);
+  }
+}
+
+document.getElementById('bannerCancel')?.addEventListener('click', () => {
+  deleteId = null;
+  document.getElementById('deleteBanner').classList.remove('show');
+});
+
+document.getElementById('bannerConfirm')?.addEventListener('click', async () => {
+  if (!deleteId) return;
+  await performDelete(deleteId);
+  deleteId = null;
+  document.getElementById('deleteBanner').classList.remove('show');
+});
+
+async function performDelete(id) {
   try {
-    await fetch(`http://localhost:4000/menu/${id}`, {
-      method: 'DELETE'
+    const res = await fetch(`/menu/${id}`, {
+      method: 'DELETE',
+      credentials: 'include'
     });
+
+    if (!res.ok) {
+      const data = await res.json();
+      showToast('Failed to delete item: ' + (data.error || 'Unknown error'));
+      return;
+    }
+
+    showToast('Item deleted');
     loadMenuAdmin();
   } catch (err) {
     console.error('Error deleting item:', err);
+    showToast('Error deleting item');
+  }
+}
+
+async function handleLogout() {
+  try {
+    const res = await fetch('/logout', {
+      method: 'POST',
+      credentials: 'include'
+    });
+
+    if (!res.ok) {
+      console.error('Logout failed');
+      showToast('Logout failed');
+      return;
+    }
+
+    // Redirect to login page after logout
+    window.location.href = '/admin/admin-login.html';
+  } catch (err) {
+    console.error('Logout error:', err);
+    showToast('Logout failed');
   }
 }
 
 function showToast(message) {
   const toast = document.getElementById('toast');
+  if (!toast) return;
+
   toast.textContent = message;
   toast.classList.remove('hidden');
   toast.classList.add('show');
@@ -174,36 +257,3 @@ function showToast(message) {
     setTimeout(() => toast.classList.add('hidden'), 300);
   }, 2000);
 }
-
-let deleteId = null;
-
-async function onDeleteClick(e) {
-  deleteId = e.target.dataset.id;
-
-  const banner = document.getElementById('deleteBanner');
-  banner.classList.add('show');
-}
-
-document.getElementById('bannerCancel').addEventListener('click', () => {
-  deleteId = null;
-  document.getElementById('deleteBanner').classList.remove('show');
-});
-
-document.getElementById('bannerConfirm').addEventListener('click', async () => {
-  if (!deleteId) return;
-
-  try {
-    await fetch(`http://localhost:4000/menu/${deleteId}`, {
-      method: 'DELETE'
-    });
-
-    showToast('Item deleted');
-    loadMenuAdmin(); // refresh cards
-  } catch (err) {
-    console.error('Error deleting item:', err);
-    showToast('Error deleting item');
-  }
-
-  deleteId = null;
-  document.getElementById('deleteBanner').classList.remove('show');
-});
