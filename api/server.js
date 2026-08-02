@@ -34,7 +34,7 @@ app.use((req, res, next) => {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(publicPath));
+
 
 // Session
 app.use(
@@ -86,7 +86,8 @@ app.post('/login', (req, res) => {
 app.post('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) return res.status(500).json({ error: 'Logout failed' });
-    res.json({ success: true });
+      res.clearCookie('connect.sid'); // default name for express-session
+      res.json({ success: true });
   });
 });
 
@@ -101,16 +102,19 @@ app.get('/admin/admin.html', requireAuth, (req, res) => {
   res.sendFile('admin.html', { root: path.join(publicPath, 'admin') });
 });
 
-// Protected API routes
 app.use('/menu', menuRoutes);
 app.use('/upload', uploadRoutes);
 
 app.post('/contact', async (req, res) => {
   const { name, email, phone, subject, message } = req.body;
 
-  // basic validation
+  //validations
   if (!name || !email || !subject || !message) {
     return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  if (!isValidEmail(email)) {
+    return res.status(400).json({ error: 'Invalid email address' });
   }
 
   try {
@@ -120,13 +124,13 @@ app.post('/contact', async (req, res) => {
       replyTo: email,
       subject: `Contact form: ${subject}`,
       text: `
-Name: ${name}
-Email: ${email}
-Phone: ${phone || 'N/A'}
+      Name: ${name}
+      Email: ${email}
+      Phone: ${phone || 'N/A'}
 
-Message:
-${message}
-      `
+      Message:
+      ${message}
+            `
     });
 
     res.json({ success: true });
@@ -135,6 +139,13 @@ ${message}
     res.status(500).json({ error: 'Failed to send message' });
   }
 });
+
+app.use(express.static(publicPath));
+
+//EMAIL VALIDATION
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
 
 app.listen(process.env.PORT, () => {
