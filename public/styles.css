@@ -496,7 +496,8 @@ body {
 .hero-subtitle,
 .hero-cards .card.info-card,
 .menu-title h1,
-.home-hero{
+.home-hero,
+.faq-hero-inner{
     animation: titlePopIn 0.75s ease-out forwards;
 }
 
@@ -1359,4 +1360,68 @@ body {
 
 .scroll-reveal.show.delay-4 {
   transition-delay: 0.55s;
+}
+
+/* FAQ PAGE */
+.faq-hero {
+  padding: 8rem 0 3rem;
+  background: var(--bg-dark);
+  color: var(--text-light);
+}
+
+.faq-hero-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 2rem;
+  text-align: left;
+}
+
+.faq-title {
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.faq-subtitle {
+  font-size: 1.05rem;
+  color: #f6e7d9;
+}
+
+.faq-content {
+  padding: 3rem 0 4rem;
+  background: var(--surface-strong);
+}
+
+.faq-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.faq-item h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 0.4rem;
+}
+
+.faq-item p {
+  font-size: 0.98rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.faq-item a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.faq-item a:hover {
+  text-decoration: underline;
 }
