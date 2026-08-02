@@ -6,8 +6,17 @@ import { fileURLToPath } from 'url';
 import session from 'express-session';
 import menuRoutes from './routes/menu.js';
 import uploadRoutes from './routes/upload.js';
+import nodemailer from 'nodemailer';
 
 dotenv.config();
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -95,6 +104,38 @@ app.get('/admin/admin.html', requireAuth, (req, res) => {
 // Protected API routes
 app.use('/menu', menuRoutes);
 app.use('/upload', uploadRoutes);
+
+app.post('/contact', async (req, res) => {
+  const { name, email, phone, subject, message } = req.body;
+
+  // basic validation
+  if (!name || !email || !subject || !message) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  try {
+    await transporter.sendMail({
+      from: `"Taco Tom's Website" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_TO || process.env.EMAIL_USER,
+      replyTo: email,
+      subject: `Contact form: ${subject}`,
+      text: `
+Name: ${name}
+Email: ${email}
+Phone: ${phone || 'N/A'}
+
+Message:
+${message}
+      `
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Error sending contact email:', err);
+    res.status(500).json({ error: 'Failed to send message' });
+  }
+});
+
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
