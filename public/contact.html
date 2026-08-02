@@ -27,45 +27,95 @@
 
     <!-- MAIN SECTION -->
     <main id="top-of-page">
-        <!-- HOURS HERO -->
-        <section class="hours-hero">
-            <div class="hours-hero-inner">
-                <h1 class="hours-title">Hours & Location</h1>
-                <p class="hours-subtitle">
-                When we’re open and where to find Taco Tom’s during the week.
+         <!-- CONTACT HERO -->
+        <section class="contact-hero">
+            <div class="contact-hero-inner">
+                <h1 class="contact-title">Contact Taco Tom's</h1>
+                <p class="contact-subtitle">
+                Questions, catering inquiries, or just want to say hello? Send us a message and we’ll get back to you.
                 </p>
             </div>
         </section>
 
-        <!-- HOURS + LOCATION DETAILS -->
-        <section class="hours-content">
-            <div class="hours-inner">
-                <div class="hours-column">
-                    <h2>Regular Hours</h2>
-                    <ul class="hours-list">
-                        <li><span class="day-label">Monday – Saturday</span><span class="time-label">10:00 AM – 7:00 PM</span></li>
-                        <li><span class="day-label">Sunday</span><span class="time-label">Closed</span></li>
-                    </ul>
-                    <p class="hours-note">
-                        Hours may vary for holidays or special events. Contact us for the most up‑to‑date schedule.
-                    </p>
-                </div>
+        <!-- CONTACT FORM + INFO -->
+        <section class="contact-content">
+        <div class="contact-inner">
+            <!-- LEFT: FORM -->
+            <div class="contact-form-card">
+                <h2>Send Us a Message</h2>
+                
+                <!-- WIRE FORM WITH NODE MAILER -->
+                <form class="contact-form" method="POST" action="#">
+                    <div class="form-row">
+                        <label for="name">Name</label>
+                        <input id="name" name="name" type="text" required>
+                    </div>
 
-                <div class="hours-column">
-                    <h2>Truck Location</h2>
-                    <p class="location-main">
-                        We’re parked in the shared food truck lot off NE Fourth Plain Blvd in Vancouver, WA, alongside several other local trucks.
-                    </p>
-                    <p class="location-address">
-                        13510 NE Fourth Plain Blvd<br>
-                        Vancouver, WA 98682
-                    </p>
-                    <!-- link to map -->
-                    <a href="https://maps.app.goo.gl/T2QZJB3VtKLJbw396" target="_blank" class="location-link">
-                        View on Google Maps
-                    </a>
-                </div>
+                    <div class="form-row">
+                        <label for="email">Email</label>
+                        <input id="email" name="email" type="email" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="phone">Phone (optional)</label>
+                        <input id="phone" name="phone" type="tel">
+                    </div>
+
+                    <div class="form-row">
+                        <label for="subject">Subject</label>
+                        <input id="subject" name="subject" type="text" placeholder="Catering, question about menu, etc." required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+
+                    <button class="btn btn-primary">Send Message</button>
+                </form>
+
+                <p class="contact-form-note">
+                    For same‑day orders or urgent questions, please call us directly.
+                </p>
             </div>
+
+            <!-- RIGHT: INFO -->
+            <div class="contact-info-card">
+            <h2>Contact Details</h2>
+
+            <div class="contact-info-block">
+                <h3>Phone</h3>
+                <p><a href="tel:3603815386" class="contact-link">(360) 381‑5386</a></p>
+            </div>
+
+            <div class="contact-info-block">
+                <h3>Email</h3>
+                <p><a href="mailto:tacotoms35@gmail.com" class="contact-link">tacotoms35@gmail.com</a></p>
+            </div>
+
+            <div class="contact-info-block">
+                <h3>Location</h3>
+                <p>
+                13510 NE Fourth Plain Blvd<br>
+                Vancouver, WA 98682
+                </p>
+                <a href="https://maps.app.goo.gl/T2QZJB3VtKLJbw396" target="_blank" class="location-link">
+                View on Google Maps
+                </a>
+            </div>
+
+            <div class="contact-info-block">
+                <h3>Catering</h3>
+                <p>
+                We offer on‑site catering in the Vancouver area. Instead of bringing the full truck,
+                our team arrives with a portable grill and ingredients, and cooks fresh food at your event.
+                </p>
+                <p>
+                Use the form to tell us your date, location, and guest count, and we’ll follow up with options.
+                </p>
+            </div>
+            </div>
+        </div>
         </section>
     </main>
         <!-- FOOTER -->
