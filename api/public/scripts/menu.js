@@ -1,6 +1,6 @@
 async function loadMenu() {
   try {
-    const res = await fetch('http://localhost:4000/menu/public');
+    const res = await fetch('https://api-icy-haze-9136.fly.dev/menu/public');
     const items = await res.json();
 
     const mains = items.filter(item => item.category === 'main');

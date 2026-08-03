@@ -11,7 +11,7 @@ document.getElementById('addItemForm').addEventListener('submit', async (e) => {
     formData.append('photo', file);
 
     try {
-      const res = await fetch('http://localhost:4000/upload/photo', {
+      const res = await fetch('https://api-icy-haze-9136.fly.dev/upload/photo', {
         method: 'POST',
         body: formData
       });
@@ -49,7 +49,7 @@ document.getElementById('addItemForm').addEventListener('submit', async (e) => {
 
   //Send menu item to /menu
   try {
-    const res = await fetch('http://localhost:4000/menu', {
+    const res = await fetch('https://api-icy-haze-9136.fly.dev/menu', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
@@ -93,7 +93,7 @@ function showToast(message) {
 
 async function loadMenuAdmin() {
   try {
-    const res = await fetch('http://localhost:4000/menu');
+    const res = await fetch('https://api-icy-haze-9136.fly.dev/menu');
     adminItems = await res.json();
 
     const container = document.getElementById('menu-items-container');
