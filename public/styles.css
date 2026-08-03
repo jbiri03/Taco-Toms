@@ -183,6 +183,11 @@
     box-sizing: border-box;
 }
 
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -283,46 +288,49 @@ body {
    HAMBURGER / MOBILE NAV
    (kept here so header/nav are grouped)
    ========================= */
+/* Base hamburger button */
 .menu-toggle {
-  display: none;
+  display: none;                  /* shown at smaller widths */
   flex-direction: column;
   justify-content: center;
-  gap: 5px;
-  background: transparent;
-  border: none;
+  gap: 4px;
+  background: transparent;        /* no pill */
+  border: none;                   /* no border */
   cursor: pointer;
-  padding: 6px 8px;
-  z-index: 1001;
+  padding: 0;                     /* let nav padding handle spacing */
   flex-shrink: 0;
 }
 
+/* The three lines */
 .hamburger-line {
   display: block;
-  width: 24px;
+  width: 20px;
   height: 2px;
-  background: var(--text-light);
+  background: var(--text-light);  /* white lines on dark nav */
   border-radius: 2px;
-  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 @media (max-width: 1150px) {
-  .menu-toggle {
+ .menu-toggle {
     display: flex;
+    /* keep background, border-radius, etc. from base */
   }
 
   .nav-links {
     position: absolute;
+    top: 100%;
     left: 0;
     right: 0;
-    top: 100%;
     margin-top: 0.5rem;
-        background: rgba(31, 26, 23, 0.96);
+    background: rgba(31, 26, 23, 0.96);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
     padding: 0.75rem 1rem 1rem;
-
     display: none;
+    flex-direction: column;
+    gap: 0.4rem;
   }
 
   .nav-links.open {
@@ -933,8 +941,16 @@ body {
   grid-template-columns: 280px 1fr;
   gap: 2.5rem;
   align-items: flex-start;
-  padding: 2.5rem 3rem 3rem;
+  padding: 2.5rem 3rem 3rem;   /* big desktop padding */
 }
+
+.menu-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  margin-left: 3rem;           /* desktop offset to the right */
+}
+
 
 /* ===== Sidebar filter card ===== */
 .category-card {
@@ -990,12 +1006,6 @@ body {
 /* =========================
    MENU CONTENT / RIGHT-SIDE SECTIONS
    ========================= */
-.menu-content {
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
-  margin-left: 3rem;
-}
 
 .menu-category-section {
   scroll-margin-top: 4rem;
@@ -1003,22 +1013,19 @@ body {
 }
 
 .menu-category-title {
-    margin: 0 0 0.3rem;
-    font-size: 3.5rem;
-    /* letter-spacing: 0.06em; */
-    color: var(--text-dark);
-    text-transform: uppercase;
-    font-weight: 1000;
-    padding-bottom: 0;
+  margin: 0 0 0.3rem;
+  font-size: 3.5rem;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  font-weight: 1000;
 }
 
 .menu-category-description {
-    font-size: 1.15rem;
-    color: var(--text-muted);
-    margin: -0.5rem 0 2rem;   /* pulls it closer to the title */
-    line-height: 1.55;
-    text-transform: none;
-    letter-spacing: 0.05em;
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  margin: -0.5rem 0 2rem;
+  line-height: 1.55;
+  letter-spacing: 0.05em;
 }
 
 /* Optional subheading (e.g., "Tacos") inside Main */
@@ -1032,11 +1039,11 @@ body {
    TEXT-ONLY ITEMS (no image)
    ========================= */
 .text-items {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2rem 4rem;
-    margin-bottom: 2rem;
-    color: var(--text-dark);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem 4rem;
+  margin-bottom: 2rem;
+  color: var(--text-dark);
 }
 
 .menu-text-item {
@@ -1046,29 +1053,27 @@ body {
 }
 
 .menu-text-item h3 {
-    margin: 0rem 0rem 0.5rem 0rem;
-    font-size: 1.6rem;
-    font-weight: 700;
-    text-transform: capitalize;
+  margin: 0 0 0.5rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-transform: capitalize;
 }
 
 .menu-text-item p {
-    margin: 0;
-    font-size: 1rem;
-    line-height: 1.5;
-    max-width: 40ch;
-    color: var(--text-muted);
-    letter-spacing: 0.04em; /* description spacing for readability */
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 40ch;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
 }
 
-/* =========================
-   IMAGE ITEMS (cards)
-   ========================= */
+/* Image cards */
 .image-items {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .menu-card {
@@ -1118,16 +1123,13 @@ body {
 /* =========================
    RESPONSIVE ADJUSTMENTS (menu + general)
    ========================= */
-@media (max-width: 1000px) {
+/* @media (max-width: 1000px) {
   .menu-layout {
     grid-template-columns: 1fr;
     padding: 2rem 1.5rem 3rem;
   }
 
-  .category-card {
-    position: static;
-    margin-left: 0;
-    margin-bottom: 1.5rem;
+    .category-card {
     display: none;
   }
 
@@ -1139,7 +1141,7 @@ body {
   .menu-title h1 {
     font-size: 2.4rem;
   }
-}
+} */
 
 /* =========================
    ABOUT / SECTION STYLES
@@ -1837,12 +1839,18 @@ body {
   .contact-inner {
     grid-template-columns: 1fr;
   }
+
 }
 
 /* =========================
    SMALL-SCREEN / ADDITIONAL HAMBURGER RULE (duplicate match kept)
    ========================= */
 @media (max-width: 500px) {
+
+  .menu-toggle {
+    padding: 8px;
+  }
+
   .site-header {
     padding: 0.75rem 0.75rem;
   }
@@ -1874,5 +1882,99 @@ body {
 
   .card.info-card {
     flex: 1 1 0;
+  }
+}
+
+/* Base (desktop/tablet) stays as you have it */
+
+/* ===== Phone tweaks (<= 640px) ===== */
+@media (max-width: 1000px) {
+  /* Make the whole menu a centered single column */
+  .menu-layout {
+    grid-template-columns: 1fr;
+    padding: 2rem 1.25rem 3rem;  /* smaller, symmetric padding */
+  }
+
+  .category-card {
+    margin-left: 0;
+    margin-right: 0;
+    display: none;
+  }
+
+  .menu-content {
+    margin-left: 0;             /* remove desktop offset */
+  }
+
+  /* Category sections & items (from before) */
+  .menu-category-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .menu-category-title {
+    font-size: 2.2rem;
+    text-align: center;
+  }
+
+  .menu-category-description {
+    font-size: 1rem;
+    margin: 0.75rem auto 1.25rem;
+    max-width: 32rem;
+    text-align: center;
+  }
+
+  .text-items {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .menu-text-item p {
+    max-width: none;
+  }
+
+  .image-items {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+    .menu-title {
+    padding: 6rem 1.5rem 0 1.5rem;  /* less left indent, more even */
+    text-align: center;
+  }
+
+  .menu-title h1 {
+    font-size: 2.8rem;              /* smaller but still bold */
+    letter-spacing: 0.04em;
+  }
+}
+
+@media (max-width: 400px) {
+  .site-header {
+    padding: 0.6rem 0.6rem;
+  }
+
+  .navigation {
+    padding: 0.5rem 0.8rem;
+    border-radius: 16px;
+  }
+
+  .nav-logo {
+    font-size: 1.6rem;        /* shrink "TACO TOM'S" text */
+    gap: 0.4rem;
+  }
+
+  .logo {
+    width: 44px;
+    height: 44px;             /* smaller logo image */
+  }
+
+  .menu-toggle {
+    /* keep simple three-line look, just a bit smaller */
+    gap: 3px;
+  }
+
+  .hamburger-line {
+    width: 16px;
+    height: 2px;
   }
 }
