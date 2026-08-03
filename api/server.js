@@ -1,3 +1,4 @@
+// server.js
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -25,6 +26,7 @@ const publicPath = path.join(__dirname, '..', 'public');
 
 const app = express();
 
+// Simple request logger
 app.use((req, res, next) => {
   console.log('INCOMING:', req.method, req.originalUrl);
   next();
@@ -35,11 +37,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 // Session
 app.use(
   session({
-    secret: process.env.SESSION_SECRET, //can add secret fallback here
+    secret: process.env.SESSION_SECRET, // consider fallback in dev
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -49,7 +50,7 @@ app.use(
   })
 );
 
-// Auth middleware
+// Auth middleware: unchanged behavior
 function requireAuth(req, res, next) {
   if (req.session && req.session.loggedIn) {
     return next();
@@ -63,12 +64,26 @@ function requireAuth(req, res, next) {
   return res.redirect('/admin/admin-login.html');
 }
 
-// Root
+/*
+  === Routing & static file ordering ===
+
+  Goal:
+    - Serve general public assets quickly (CSS/JS/images).
+    - Protect everything under /admin except the login page + its static dependencies.
+
+  Implementation:
+    - Mount a special middleware at /admin that allows the login page and static asset requests
+      to pass through. For other /admin requests, run requireAuth first.
+    - After that admin-specific mount, mount the global express.static(publicPath) so other assets
+      and index.html are served as usual.
+*/
+
+// Root redirect (keeps previous behavior)
 app.get('/', (req, res) => {
   res.redirect('/index.html');
 });
 
-// Auth routes
+// Auth endpoints (login / logout)
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
 
@@ -86,29 +101,20 @@ app.post('/login', (req, res) => {
 app.post('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) return res.status(500).json({ error: 'Logout failed' });
-      res.clearCookie('connect.sid'); // default name for express-session
-      res.json({ success: true });
+    res.clearCookie('connect.sid'); // default name for express-session
+    res.json({ success: true });
   });
 });
 
-// Admin pages
-// Login page (public)
-app.get('/admin/admin-login.html', (req, res) => {
-  res.sendFile('admin-login.html', { root: path.join(publicPath, 'admin') });
-});
-
-// Admin dashboard (protected)
-app.get('/admin/admin.html', requireAuth, (req, res) => {
-  res.sendFile('admin.html', { root: path.join(publicPath, 'admin') });
-});
-
+// Mount API routes BEFORE static so they are always handled by Express
 app.use('/menu', menuRoutes);
 app.use('/upload', uploadRoutes);
 
+// Contact form
 app.post('/contact', async (req, res) => {
   const { name, email, phone, subject, message } = req.body;
 
-  //validations
+  // validations
   if (!name || !email || !subject || !message) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
@@ -140,13 +146,39 @@ app.post('/contact', async (req, res) => {
   }
 });
 
+/* ============================
+   Admin protection + static
+   ============================
+   We mount this BEFORE the global express.static(publicPath) so we can intercept
+   /admin/* requests and require auth where needed.
+*/
+app.use(
+  '/admin',
+  (req, res, next) => {
+    // Allow the admin login page to be public:
+    if (req.path === '/admin-login.html' || req.path === '/admin-login') {
+      return next();
+    }
+
+    // Allow static asset requests (so login page's CSS/JS/images can load)
+    // This checks typical static extensions; extend if you use other types.
+    if (req.method === 'GET' && /\.(css|js|png|jpg|jpeg|svg|gif|woff2?|map|ico)$/i.test(req.path)) {
+      return next();
+    }
+
+    // Otherwise require auth for /admin/*
+    return requireAuth(req, res, next);
+  },
+  express.static(path.join(publicPath, 'admin'))
+);
+
+// Serve general public assets (CSS/JS/images/index.html etc.)
 app.use(express.static(publicPath));
 
-//EMAIL VALIDATION
+// EMAIL VALIDATION (kept unchanged)
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
-
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
