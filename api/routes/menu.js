@@ -8,7 +8,7 @@ import pool from '../db.js';
 const router = express.Router();
 
 // Multer setup (same as in upload.js)
-const uploadDir = path.join(process.cwd(), 'public', 'admin', 'uploads');
+const uploadDir = path.join(process.cwd(), 'public', 'uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
