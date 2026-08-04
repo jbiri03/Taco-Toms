@@ -21,36 +21,70 @@ const transporter = nodemailer.createTransport({
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const publicPath = path.join(__dirname, 'public');
 
 const app = express();
 
+// If your app is behind a proxy (Fly, Heroku, nginx), trust proxy so req.protocol and
+// x-forwarded-* headers are honored.
+app.set('trust proxy', true);
+
 // Simple request logger
 app.use((req, res, next) => {
-  console.log('INCOMING:', req.method, req.originalUrl);
+  console.log('INCOMING:', req.method, req.originalUrl, 'protocol=', req.protocol, 'host=', req.headers.host);
   next();
 });
 
 // Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Session
+
+
+
+// Increase body-parser limits so uploads / big JSON do not get rejected by express
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ limit: '20mb', extended: true }));
+
+// Session cookie configuration
+const isProd = process.env.NODE_ENV === 'production';
+const sessionCookieOptions = {
+  httpOnly: true,
+  secure: isProd, // only send cookie over HTTPS in production
+  sameSite: 'lax', // allows top-level POST from same site but prevents most CSRF
+  maxAge: 1000 * 60 * 60 * 2 // 2 hours
+};
+
 app.use(
   session({
-    secret: process.env.SESSION_SECRET, // consider fallback in dev
+    secret: process.env.SESSION_SECRET || 'dev-secret',
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 2
-    }
+    cookie: sessionCookieOptions
   })
 );
 
-// Auth middleware: unchanged behavior
+// debug middleware — MUST run after session() so req.session & req.sessionID exist
+app.use((req, res, next) => {
+  try {
+    console.log(
+      'REQ:',
+      req.method,
+      req.originalUrl,
+      'pid=', process.pid,
+      'sid=', req.sessionID,
+      'loggedIn=', !!req.session?.loggedIn,
+      'host=', req.headers.host,
+      'protocol=', req.protocol,
+      'secure=', req.secure,
+      'cookies=', req.headers.cookie || '(none)'
+    );
+  } catch (err) {
+    console.error('Debug middleware error', err);
+  }
+  next();
+});
+
+// Auth middleware
 function requireAuth(req, res, next) {
   if (req.session && req.session.loggedIn) {
     return next();
@@ -60,37 +94,61 @@ function requireAuth(req, res, next) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  // Redirect to login page in /admin folder
+  // Redirect to login page in /admin folder (no host change here)
   return res.redirect('/admin/admin-login.html');
 }
 
+/*
+  HTTPS / host normalization middleware
+  - We trust proxy above, so req.secure and req.headers['x-forwarded-proto'] are correct.
+  - If incoming request is not HTTPS, redirect to https.
+  - Use 301 for safe GET/HEAD redirects, use 308 for other methods to preserve method+body.
+  - Additionally remove a leading "www." if present in host.
+*/
 app.use((req, res, next) => {
-  const host = req.headers.host || '';
+  try {
+    const host = req.headers.host || '';
+    let targetHost = host;
 
-  // If request is to www, redirect to non-www with HTTPS
-  if (host.startsWith('www.')) {
-    const newHost = host.replace(/^www\./, '');
-    return res.redirect(301, `https://${newHost}${req.originalUrl}`);
-    //switch back to https
+    // strip www. if present
+    if (host.startsWith('www.')) {
+      targetHost = host.replace(/^www\./, '');
+    }
+
+    // Determine if request is secure (works with proxies because 'trust proxy' is true)
+    const isSecure = req.secure || (req.headers['x-forwarded-proto'] || '').includes('https');
+
+    if (!isSecure) {
+      // Build target URL
+      const targetUrl = `https://${targetHost}${req.originalUrl}`;
+
+      // For GET/HEAD use 301 (or 302) to preserve semantics and caches
+      if (req.method === 'GET' || req.method === 'HEAD') {
+        console.log('Redirecting (GET/HEAD) to:', targetUrl);
+        return res.redirect(301, targetUrl);
+      } else {
+        // For POST/PUT/etc preserve method and body with 308
+        console.log('Redirecting (preserve method) to:', targetUrl);
+        return res.redirect(308, targetUrl);
+      }
+    }
+
+    // If host changed only by removing www, redirect to non-www but preserve scheme
+    if (host !== targetHost) {
+      const sameSchemeUrl = `${req.protocol}://${targetHost}${req.originalUrl}`;
+      const status = (req.method === 'GET' || req.method === 'HEAD') ? 301 : 308;
+      console.log('Redirecting host-only change to:', sameSchemeUrl);
+      return res.redirect(status, sameSchemeUrl);
+    }
+  } catch (err) {
+    console.error('HTTPS redirect middleware error', err);
+    // continue even if this middleware has an error
   }
 
   next();
 });
-/*
-  === Routing & static file ordering ===
 
-  Goal:
-    - Serve general public assets quickly (CSS/JS/images).
-    - Protect everything under /admin except the login page + its static dependencies.
-
-  Implementation:
-    - Mount a special middleware at /admin that allows the login page and static asset requests
-      to pass through. For other /admin requests, run requireAuth first.
-    - After that admin-specific mount, mount the global express.static(publicPath) so other assets
-      and index.html are served as usual.
-*/
-
-// Root redirect (keeps previous behavior)
+// Root redirect
 app.get('/', (req, res) => {
   res.redirect('/index.html');
 });
@@ -104,6 +162,7 @@ app.post('/login', (req, res) => {
     password === process.env.ADMIN_PASS
   ) {
     req.session.loggedIn = true;
+    // return success JSON
     return res.json({ success: true });
   }
 
@@ -112,8 +171,9 @@ app.post('/login', (req, res) => {
 
 app.post('/logout', (req, res) => {
   req.session.destroy(err => {
+    // Clear cookie with same options as when it was set
+    res.clearCookie('connect.sid', { ...sessionCookieOptions, path: '/' });
     if (err) return res.status(500).json({ error: 'Logout failed' });
-    res.clearCookie('connect.sid'); // default name for express-session
     res.json({ success: true });
   });
 });
@@ -141,14 +201,7 @@ app.post('/contact', async (req, res) => {
       to: process.env.EMAIL_TO || process.env.EMAIL_USER,
       replyTo: email,
       subject: `Contact form: ${subject}`,
-      text: `
-      Name: ${name}
-      Email: ${email}
-      Phone: ${phone || 'N/A'}
-
-      Message:
-      ${message}
-            `
+      text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone || 'N/A'}\n\nMessage:\n${message}`
     });
 
     res.json({ success: true });
@@ -161,8 +214,9 @@ app.post('/contact', async (req, res) => {
 /* ============================
    Admin protection + static
    ============================
-   We mount this BEFORE the global express.static(publicPath) so we can intercept
-   /admin/* requests and require auth where needed.
+   - Mount the admin middleware to allow public access to the login page and static
+     dependencies, otherwise require auth.
+   - Serve admin static with caching for assets and no-store for HTML.
 */
 app.use(
   '/admin',
@@ -172,7 +226,7 @@ app.use(
       return next();
     }
 
-    // Allow static assets without auth
+    // Allow static asset requests without auth (typical extensions)
     if (
       req.method === 'GET' &&
       /\.(css|js|png|jpg|jpeg|svg|gif|woff2?|map|ico)$/i.test(req.path)
@@ -180,40 +234,40 @@ app.use(
       return next();
     }
 
+    // Otherwise require auth
     return requireAuth(req, res, next);
   },
-  // Custom caching: no cache for HTML, heavy cache for assets
-  (req, res, next) => {
-    if (req.method === 'GET' && req.path.endsWith('.html')) {
-      res.setHeader('Cache-Control', 'no-store');
-    }
-    next();
-  },
+  // Set cache headers for admin static files; no-store for HTML
   express.static(path.join(publicPath, 'admin'), {
     maxAge: '7d',
-    immutable: true
+    immutable: true,
+    setHeaders: (res, filePath) => {
+      if (/\.(html|htm)$/i.test(filePath)) {
+        res.setHeader('Cache-Control', 'no-store');
+      }
+    }
   })
 );
 
 // Serve general public assets (CSS/JS/images/index.html etc.)
-// General static files (CSS/JS/images/fonts) – heavy caching
+// For public assets: heavy caching for static assets, no-store for HTML
 app.use(express.static(publicPath, {
   maxAge: '7d',
   immutable: true,
-  // only apply to non-HTML
-  setHeaders: (res, path) => {
-    if (/\.(html|htm)$/i.test(path)) {
-      // Override for HTML: no cache
+  setHeaders: (res, filePath) => {
+    if (/\.(html|htm)$/i.test(filePath)) {
       res.setHeader('Cache-Control', 'no-store');
     }
   }
 }));
 
-// EMAIL VALIDATION (kept unchanged)
+// EMAIL VALIDATION
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port ${process.env.PORT}`);
+// Start server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
