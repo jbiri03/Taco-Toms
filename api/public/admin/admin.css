@@ -506,3 +506,200 @@ body {
 .logout-button:active {
   transform: translateY(0);
 }
+
+/* ============ RESPONSIVE / MOBILE STYLES ============ */
+
+/* General: prevent horizontal scroll on small screens */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Stack sidebar on top instead of left */
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .admin-sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-right: none;
+    border-bottom: 3px solid #2a2a32;
+    padding: 1.25rem 1rem;
+  }
+
+  .admin-sidebar h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Header: reduce padding, adjust logout button */
+  .admin-header {
+    padding: 1.25rem 1rem 0.5rem 1rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-header h1 {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .logout-button {
+    align-self: center;
+    font-size: 0.7rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  /* Menu list: smaller padding, full width */
+  .admin-menu-list {
+    padding: 0 1rem 2rem 1rem;
+    justify-content: flex-start;
+  }
+
+  #menu-items-container {
+    max-width: 100%;
+  }
+
+  /* Menu item card: switch to vertical layout */
+  .menu-item-row {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .menu-item-thumb,
+  .menu-item-no-image {
+    width: 100%;
+    max-width: 220px;
+    height: 160px;
+    margin: 0 auto;
+  }
+
+  .menu-item-main {
+    text-align: center;
+  }
+
+  .menu-item-name {
+    font-size: 1rem;
+  }
+
+  .menu-item-description {
+    font-size: 0.8rem;
+  }
+
+  .menu-item-category {
+    font-size: 0.7rem;
+  }
+
+  /* Availability toggle: centered, slightly larger tap target */
+  .menu-item-available {
+    justify-self: center;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.75rem;
+  }
+
+  /* Actions: full width, bigger buttons */
+  .menu-item-actions {
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .menu-item-actions button {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.7rem;
+    min-width: 70px;
+    text-align: center;
+  }
+
+  /* Modal: more padding, slightly smaller text */
+  .edit-modal-content {
+    width: 95%;
+    max-width: none;
+    padding: 1.5rem 1.25rem;
+  }
+
+  .edit-modal-content h2 {
+    font-size: 1.3rem;
+  }
+
+  .edit-modal-content label {
+    font-size: 0.8rem;
+  }
+
+  .edit-modal-content input[type="text"],
+  .edit-modal-content select,
+  .edit-modal-content input[type="file"] {
+    font-size: 0.9rem;
+    padding: 0.7rem 0.8rem;
+  }
+
+  .edit-modal-actions {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .edit-modal-actions button {
+    padding: 0.8rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  /* Footer */
+  .site-footer {
+    padding: 1rem;
+    font-size: 0.75rem;
+  }
+
+  /* Toast */
+  .toast {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    width: auto;
+    text-align: center;
+  }
+
+  /* Delete banner */
+  .delete-banner {
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .banner-actions {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 420px) {
+  .admin-sidebar h2 {
+    font-size: 1.1rem;
+  }
+
+  .admin-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .menu-item-name {
+    font-size: 0.95rem;
+  }
+
+  .menu-item-description {
+    font-size: 0.75rem;
+  }
+
+  .menu-item-thumb,
+  .menu-item-no-image {
+    height: 140px;
+  }
+
+  .edit-modal-content {
+    padding: 1.25rem 1rem;
+  }
+}

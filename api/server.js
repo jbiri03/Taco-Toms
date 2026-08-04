@@ -70,7 +70,8 @@ app.use((req, res, next) => {
   // If request is to www, redirect to non-www with HTTPS
   if (host.startsWith('www.')) {
     const newHost = host.replace(/^www\./, '');
-    return res.redirect(301, `https://${newHost}${req.originalUrl}`);
+    return res.redirect(301, `http://${newHost}${req.originalUrl}`);
+    //switch back to https
   }
 
   next();

@@ -15,7 +15,7 @@ router.post('/test', (req, res) => {
 
 // Multer setup
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, '../public/admin/uploads'),
+  destination: (req, file, cb) => cb(null, 'public/admin/uploads'),
   filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
 });
 
