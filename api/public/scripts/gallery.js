@@ -5,6 +5,14 @@ const prevBtn = document.getElementById("prevBtn");
 const dotsContainer = document.getElementById("galleryDots");
 
 let currentIndex = 0;
+let autoplayInterval;
+const autoplayDelay = 3500;
+let autoplayPaused = false;
+
+let isPointerDown = false;
+let startX = 0;
+let startScrollLeft = 0;
+let autoplayTimeout;
 
 /* ===========================
    DOTS
@@ -50,21 +58,19 @@ function updateSlider(smooth = true) {
 function goNext() {
   if (currentIndex < slides.length - 1) {
     currentIndex++;
-    updateSlider(true);
   } else {
     currentIndex = 0;
-    updateSlider(false);
   }
+  updateSlider(true);
 }
 
 function goPrev() {
   if (currentIndex > 0) {
     currentIndex--;
-    updateSlider(true);
   } else {
     currentIndex = slides.length - 1;
-    updateSlider(false);
   }
+  updateSlider(true);
 }
 
 nextBtn.addEventListener("click", () => {
@@ -83,10 +89,6 @@ window.addEventListener("resize", () => updateSlider(false));
    AUTOPLAY CONTROL
    =========================== */
 
-let autoplayInterval;
-const autoplayDelay = 3500;
-let autoplayPaused = false;
-
 function startAutoplay() {
   clearInterval(autoplayInterval);
   autoplayInterval = setInterval(() => {
@@ -96,81 +98,60 @@ function startAutoplay() {
   }, autoplayDelay);
 }
 
-// Pause for 5s on any user interaction, then resume
 function pauseAutoplay() {
   autoplayPaused = true;
+  clearTimeout(autoplayTimeout);
   clearInterval(autoplayInterval);
 
-  setTimeout(() => {
+  autoplayTimeout = setTimeout(() => {
     autoplayPaused = false;
     startAutoplay();
   }, 5000);
 }
 
 /* ===========================
-   SWIPE / DRAG (TOUCH + MOUSE)
+   SWIPE / DRAG
    =========================== */
 
-let isPointerDown = false;
-let startX = 0;
-let startScrollLeft = 0;
-
-// Touch start
-track.addEventListener("touchstart", (e) => {
-  if (e.touches.length !== 1) return;
+track.addEventListener("pointerdown", (e) => {
   isPointerDown = true;
-  startX = e.touches[0].clientX;
+  startX = e.clientX;
   startScrollLeft = track.scrollLeft;
+  track.setPointerCapture(e.pointerId);
   pauseAutoplay();
 });
 
-// Touch move
-track.addEventListener("touchmove", (e) => {
-  if (!isPointerDown || e.touches.length !== 1) return;
-  e.preventDefault(); // prevent default scrolling
-  const currentX = e.touches[0].clientX;
-  const diff = currentX - startX;
+track.addEventListener("pointermove", (e) => {
+  if (!isPointerDown) return;
+
+  const diff = e.clientX - startX;
   track.scrollLeft = startScrollLeft - diff;
 });
 
-// Touch end
-track.addEventListener("touchend", () => {
+track.addEventListener("pointerup", () => {
   if (!isPointerDown) return;
   isPointerDown = false;
   snapToNearestSlide();
 });
 
-// // Mouse start (desktop)
-// track.addEventListener("mousedown", (e) => {
-//   isPointerDown = true;
-//   startX = e.clientX;
-//   startScrollLeft = track.scrollLeft;
-//   pauseAutoplay();
-// });
+track.addEventListener("pointercancel", () => {
+  isPointerDown = false;
+});
 
-// // Mouse move
-// track.addEventListener("mousemove", (e) => {
-//   if (!isPointerDown) return;
-//   e.preventDefault(); // stop text selection
-//   const currentX = e.clientX;
-//   const diff = currentX - startX;
-//   track.scrollLeft = startScrollLeft - diff;
-// });
+/* ===========================
+   SNAP
+   =========================== */
 
-// // Mouse end / leave
-// ["mouseup", "mouseleave"].forEach((evt) => {
-//   track.addEventListener(evt, () => {
-//     if (!isPointerDown) return;
-//     isPointerDown = false;
-//     snapToNearestSlide();
-//   });
-// });
-
-// Snap to nearest slide + update index/dots
 function snapToNearestSlide() {
   const slideWidth = track.clientWidth;
-  const newIndex = Math.round(track.scrollLeft / slideWidth);
-  currentIndex = Math.max(0, Math.min(slides.length - 1, newIndex));
+  const delta = track.scrollLeft - currentIndex * slideWidth;
+
+  if (delta > slideWidth * 0.12) {
+    currentIndex = Math.min(slides.length - 1, currentIndex + 1);
+  } else if (delta < -slideWidth * 0.12) {
+    currentIndex = Math.max(0, currentIndex - 1);
+  }
+
   updateSlider(true);
 }
 

@@ -498,15 +498,17 @@ body {
 .gallery-track {
   width: 100%;
   display: flex;
-  overflow-x: auto;          /* must NOT be hidden */
+  overflow-x: auto;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   border-radius: 18px;
-  scrollbar-width: none;     /* Firefox */
+  scrollbar-width: none;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 .gallery-track::-webkit-scrollbar {
-  display: none;             /* Chrome/Safari/Edge */
+  display: none;
 }
 
 .gallery-slide {
@@ -2080,3 +2082,4 @@ body {
     font-size: 1rem;
   }
 }
+
