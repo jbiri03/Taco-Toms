@@ -181,11 +181,18 @@ app.use(
     // Otherwise require auth for /admin/*
     return requireAuth(req, res, next);
   },
-  express.static(path.join(publicPath, 'admin'))
+    express.static(path.join(publicPath, 'admin'), {
+    maxAge: '7d',
+    immutable: true
+  })
+
 );
 
 // Serve general public assets (CSS/JS/images/index.html etc.)
-app.use(express.static(publicPath));
+app.use(express.static(publicPath, {
+  maxAge: '7d',      // cache for 7 days
+  immutable: true    // tell browser content won’t change under same URL
+}));
 
 // EMAIL VALIDATION (kept unchanged)
 function isValidEmail(email) {
