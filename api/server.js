@@ -64,6 +64,17 @@ function requireAuth(req, res, next) {
   return res.redirect('/admin/admin-login.html');
 }
 
+app.use((req, res, next) => {
+  const host = req.headers.host || '';
+
+  // If request is to www, redirect to non-www
+  if (host.startsWith('www.')) {
+    const newHost = host.replace(/^www\./, '');
+    return res.redirect(301, `https://${newHost}${req.originalUrl}`);
+  }
+
+  next();
+});
 /*
   === Routing & static file ordering ===
 
