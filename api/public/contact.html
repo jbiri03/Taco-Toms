@@ -52,7 +52,7 @@
                 <h2>Send Us a Message</h2>
                 
                 <!-- WIRE FORM WITH NODE MAILER -->
-                <form class="contact-form" method="POST" action="/contact">
+                <form class="contact-form" id="contactForm" method="POST" action="/contact">
                     <div class="form-row">
                         <label for="name">Name</label>
                         <input id="name" name="name" type="text" required>
@@ -78,7 +78,11 @@
                         <textarea id="message" name="message" rows="5" required></textarea>
                     </div>
 
-                    <button class="btn btn-primary">Send Message</button>
+                    <div id="formError" class="error" style="display:none;"></div>
+                    <div id="formSuccess" class="success" style="display:none;">
+                        Message sent! We’ll get back to you soon.
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
                 </form>
 
                 <p class="contact-form-note">
@@ -177,5 +181,6 @@
     <!-- SCRIPTS -->
     <script src="scripts/scroll.js"></script>
     <script src="scripts/hamburger.js"></script>
+    <script src="scripts/submit.js"></script>
 </body>
 </html>
