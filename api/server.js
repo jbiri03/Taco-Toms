@@ -1,4 +1,3 @@
-// server.js
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -37,9 +36,6 @@ app.use((req, res, next) => {
 
 // Middleware
 app.use(cors());
-
-
-
 
 // Increase body-parser limits so uploads / big JSON do not get rejected by express
 app.use(express.json({ limit: '20mb' }));
@@ -248,6 +244,17 @@ app.use(
     }
   })
 );
+
+// Serve uploads without caching so new uploads are visible immediately
+app.use('/uploads', express.static(path.join(publicPath, 'uploads'), {
+  index: false,
+  setHeaders: (res, filePath) => {
+    // Prevent browsers and intermediate caches from storing uploaded files
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
+}));
 
 // Serve general public assets (CSS/JS/images/index.html etc.)
 // For public assets: heavy caching for static assets, no-store for HTML
