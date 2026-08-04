@@ -167,31 +167,46 @@ app.post('/contact', async (req, res) => {
 app.use(
   '/admin',
   (req, res, next) => {
-    // Allow the admin login page to be public:
+    // Allow login page without auth
     if (req.path === '/admin-login.html' || req.path === '/admin-login') {
       return next();
     }
 
-    // Allow static asset requests (so login page's CSS/JS/images can load)
-    // This checks typical static extensions; extend if you use other types.
-    if (req.method === 'GET' && /\.(css|js|png|jpg|jpeg|svg|gif|woff2?|map|ico)$/i.test(req.path)) {
+    // Allow static assets without auth
+    if (
+      req.method === 'GET' &&
+      /\.(css|js|png|jpg|jpeg|svg|gif|woff2?|map|ico)$/i.test(req.path)
+    ) {
       return next();
     }
 
-    // Otherwise require auth for /admin/*
     return requireAuth(req, res, next);
   },
-    express.static(path.join(publicPath, 'admin'), {
+  // Custom caching: no cache for HTML, heavy cache for assets
+  (req, res, next) => {
+    if (req.method === 'GET' && req.path.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-store');
+    }
+    next();
+  },
+  express.static(path.join(publicPath, 'admin'), {
     maxAge: '7d',
     immutable: true
   })
-
 );
 
 // Serve general public assets (CSS/JS/images/index.html etc.)
+// General static files (CSS/JS/images/fonts) – heavy caching
 app.use(express.static(publicPath, {
-  maxAge: '7d',      // cache for 7 days
-  immutable: true    // tell browser content won’t change under same URL
+  maxAge: '7d',
+  immutable: true,
+  // only apply to non-HTML
+  setHeaders: (res, path) => {
+    if (/\.(html|htm)$/i.test(path)) {
+      // Override for HTML: no cache
+      res.setHeader('Cache-Control', 'no-store');
+    }
+  }
 }));
 
 // EMAIL VALIDATION (kept unchanged)
