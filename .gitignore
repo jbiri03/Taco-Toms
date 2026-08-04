@@ -70,3 +70,4 @@ docker-compose.override.yml
 *.zip
 *.tar.gz
 *.tgz
+documentation/Taco Tom Website Details.pdf
