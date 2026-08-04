@@ -67,7 +67,7 @@ function requireAuth(req, res, next) {
 app.use((req, res, next) => {
   const host = req.headers.host || '';
 
-  // If request is to www, redirect to non-www
+  // If request is to www, redirect to non-www with HTTPS
   if (host.startsWith('www.')) {
     const newHost = host.replace(/^www\./, '');
     return res.redirect(301, `https://${newHost}${req.originalUrl}`);
