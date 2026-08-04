@@ -2002,3 +2002,81 @@ body {
   border: 2px solid rgba(34, 197, 94, 0.6);
   color: var(--accent-2);
 }
+
+/* =========================
+   FOOTER RESPONSIVE FIX
+   ========================= */
+
+/* Base: ensure footer container never overflows */
+.site-footer {
+  overflow-x: hidden;
+}
+
+.footer-container {
+  width: 100%;
+}
+
+/* Tablet & smaller */
+@media (max-width: 768px) {
+  .footer-col {
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-address,
+  .footer-hours {
+    font-size: 1rem;      /* slightly smaller on mobile */
+    line-height: 1.5;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .footer-heading {
+    font-size: 1.1rem;
+  }
+
+  .footer-links a {
+    font-size: 1.05rem;
+  }
+}
+
+/* Phones: stack everything and shrink text more */
+@media (max-width: 480px) {
+  .site-footer {
+    padding: 2rem 1rem 1rem;
+  }
+
+  .footer-container {
+    grid-template-columns: 1fr;  /* single column */
+    gap: 1.5rem;
+  }
+
+  .footer-col {
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-logo {
+    max-width: 140px;
+  }
+
+  .footer-tagline,
+  .footer-address,
+  .footer-hours {
+    font-size: 0.95rem;
+    max-width: 100%;
+  }
+
+  .footer-heading {
+    font-size: 1rem;
+  }
+
+  .footer-links a {
+    font-size: 1rem;
+  }
+
+  .footer-phone,
+  .footer-social a {
+    font-size: 1rem;
+  }
+}
