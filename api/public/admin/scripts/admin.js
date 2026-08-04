@@ -23,7 +23,7 @@ async function loadMenuAdmin() {
     if (!res.ok) {
       if (res.status === 401) {
         // Not logged in → redirect to login
-        window.location.href = '/admin/admin-login.html';
+        window.location.replace('/admin/admin-login.html');
         return;
       }
       throw new Error('Failed to load menu');
@@ -238,7 +238,7 @@ async function handleLogout() {
     }
 
     // Redirect to login page after logout
-    window.location.href = '/admin/admin-login.html';
+    window.location.replace('/admin/admin-login.html');
   } catch (err) {
     console.error('Logout error:', err);
     showToast('Logout failed');

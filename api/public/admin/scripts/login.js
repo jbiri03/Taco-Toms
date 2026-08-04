@@ -22,7 +22,7 @@ form.addEventListener('submit', async (e) => {
         return;
     }
 
-    window.location.href = '/admin/admin.html';
+    window.location.replace('/admin/admin.html');
     } catch (err) {
     console.error(err);
     errorEl.textContent = 'Login failed';
