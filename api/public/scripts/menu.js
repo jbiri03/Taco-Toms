@@ -257,6 +257,7 @@ function renderCategory(textContainerId, imageContainerId, items, loadedImageMap
   const textContainer = document.getElementById(textContainerId);
   const imageContainer = document.getElementById(imageContainerId);
   if (!textContainer || !imageContainer) return;
+
   textContainer.innerHTML = '';
   imageContainer.innerHTML = '';
 
@@ -269,16 +270,6 @@ function renderCategory(textContainerId, imageContainerId, items, loadedImageMap
   }
 
   items.forEach(item => {
-    // Text block
-    const block = document.createElement('article');
-    block.className = 'menu-text-item';
-    block.innerHTML = `
-      <h3>${escapeHtml(item.name)}</h3>
-      ${item.description ? `<p>${escapeHtml(item.description)}</p>` : ''}
-    `;
-    textContainer.appendChild(block);
-
-    // Image card
     if (item.photo_url) {
       const card = document.createElement('article');
       card.className = 'menu-card';
@@ -296,6 +287,7 @@ function renderCategory(textContainerId, imageContainerId, items, loadedImageMap
         placeholder.dataset.alt = item.name ? item.name : '';
         placeholder.textContent = 'Image loading...';
         card.appendChild(placeholder);
+        showLoading(true, 'Loading menu...');
       }
 
       const body = document.createElement('div');
@@ -307,6 +299,14 @@ function renderCategory(textContainerId, imageContainerId, items, loadedImageMap
       card.appendChild(body);
 
       imageContainer.appendChild(card);
+    } else {
+      const block = document.createElement('article');
+      block.className = 'menu-text-item';
+      block.innerHTML = `
+        <h3>${escapeHtml(item.name)}</h3>
+        ${item.description ? `<p>${escapeHtml(item.description)}</p>` : ''}
+      `;
+      textContainer.appendChild(block);
     }
   });
 }
