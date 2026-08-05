@@ -285,7 +285,13 @@ function renderCategory(textContainerId, imageContainerId, items, loadedImageMap
         placeholder.setAttribute('aria-hidden', 'true');
         placeholder.dataset.photoUrl = item.photo_url;
         placeholder.dataset.alt = item.name ? item.name : '';
-        placeholder.textContent = 'Image loading...';
+        placeholder.innerHTML = `
+            <span class="ellipsis" aria-hidden="true">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </span>
+        `;
         card.appendChild(placeholder);
         showLoading(true, 'Loading menu...');
       }

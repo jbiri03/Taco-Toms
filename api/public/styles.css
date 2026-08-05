@@ -2126,3 +2126,47 @@ body {
   padding: 0.6rem 0;
   color: #666;
 }
+/* centers a single-line text or any children horizontally/vertically */
+.menu-card-placeholder {
+  display: flex;
+  align-items: center;       /* vertical centering */
+  justify-content: center;   /* horizontal centering */
+  text-align: center;
+  padding: 2rem;
+}
+
+.ellipsis {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+/* dot style */
+.dot {
+  width: 8px;
+  height: 8px;
+  background: #555;
+  border-radius: 50%;
+  opacity: 0.25;
+  transform: translateY(0);
+  animation: dotPulse 1s linear infinite;
+}
+
+/* staggered delays so they animate one-by-one */
+.dot:nth-child(1) { animation-delay: 0s; }
+.dot:nth-child(2) { animation-delay: 0.15s; }
+.dot:nth-child(3) { animation-delay: 0.3s; }
+
+/* animation: scale+fade pulse */
+@keyframes dotPulse {
+  0%   { opacity: 0.25; transform: translateY(0); }
+  30%  { opacity: 1;    transform: translateY(-4px); }
+  60%  { opacity: 0.5;  transform: translateY(0); }
+  100% { opacity: 0.25; transform: translateY(0); }
+}
+
+/* reduce motion respect */
+@media (prefers-reduced-motion: reduce) {
+  .dot { animation: none; opacity: 1; transform: none; }
+}
