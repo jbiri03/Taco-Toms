@@ -5,7 +5,6 @@ document.getElementById('addItemForm').addEventListener('submit', async (e) => {
   const hiddenPhotoUrl = document.getElementById('photoUrl');
   const file = fileInput.files[0];
 
-  //Upload photo first, if a file is selected
   if (file) {
     const formData = new FormData();
     formData.append('photo', file);
@@ -21,33 +20,27 @@ document.getElementById('addItemForm').addEventListener('submit', async (e) => {
 
       if (!res.ok) {
         showToast('Upload failed: ' + (data.error || 'Unknown error'));
-        return; // stop if upload fails
+        return;
       }
 
-      // Save file path into hidden field so it’s included in the form data
       hiddenPhotoUrl.value = data.filePath;
     } catch (err) {
       console.error('Upload error:', err);
       showToast('Error uploading photo');
-      return; // stop if upload fails
+      return;
     }
   } else {
-    // No file selected
     console.log('No photo selected, continuing without upload');
   }
 
-  //Collect form data 
   const form = new FormData(e.target);
   const body = Object.fromEntries(form.entries());
 
-  // No price handling
-    body.available = parseInt(body.available, 10);
-
-    delete body.price;
+  body.available = parseInt(body.available, 10);
+  delete body.price;
 
   console.log('Sending menu item:', body);
 
-  //Send menu item to /menu
   try {
     const res = await fetch('https://tacotomslonchera.com/menu', {
       method: 'POST',
@@ -64,9 +57,9 @@ document.getElementById('addItemForm').addEventListener('submit', async (e) => {
     }
 
     showToast('Item added!');
-    loadMenuAdmin(); // Refresh the menu items list
+    loadMenuAdmin();
     e.target.reset();
-    hiddenPhotoUrl.value = ''; // clear hidden field
+    hiddenPhotoUrl.value = '';
   } catch (err) {
     console.error('Submit error:', err);
     showToast('Error submitting form');
@@ -99,41 +92,41 @@ async function loadMenuAdmin() {
     const container = document.getElementById('menu-items-container');
     container.innerHTML = '';
 
-adminItems.forEach(item => {
-  const row = document.createElement('div');
-  row.className = 'menu-item-row';
+    adminItems.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'menu-item-row';
 
-  const availableChecked = item.available ? 'checked' : '';
-  const categoryLabel =
-    item.category.charAt(0).toUpperCase() + item.category.slice(1);
+      const availableChecked = item.available ? 'checked' : '';
+      const categoryLabel =
+        item.category.charAt(0).toUpperCase() + item.category.slice(1);
 
-  row.innerHTML = `
-    ${item.photo_url
-      ? `<img src="../${item.photo_url}" alt="${item.name}" class="menu-item-thumb">`
-      : `<div class="menu-item-no-image">No Image</div>`
-    }
-    <div class="menu-item-main">
-      <div class="menu-item-name">${item.name}</div>
-      <div class="menu-item-description">${item.description || ''}</div>
-      <div class="menu-item-category">Category: ${categoryLabel}</div>
-    </div>
-    <div style="display:flex; align-items:center; gap:0.75rem;">
-      <label class="menu-item-available">
-        <input type="checkbox"
-               class="availability-toggle"
-               data-id="${item.id}"
-               ${availableChecked}>
-        <span class="menu-item-available-text">Available</span>
-      </label>
-      <div class="menu-item-actions">
-        <button class="edit-button" data-id="${item.id}">Edit</button>
-        <button class="delete-button" data-id="${item.id}">Delete</button>
-      </div>
-    </div>
-  `;
+      row.innerHTML = `
+        ${item.photo_url
+          ? `<img src="${item.photo_url}" alt="${item.name}" class="menu-item-thumb">`
+          : `<div class="menu-item-no-image">No Image</div>`
+        }
+        <div class="menu-item-main">
+          <div class="menu-item-name">${item.name}</div>
+          <div class="menu-item-description">${item.description || ''}</div>
+          <div class="menu-item-category">Category: ${categoryLabel}</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <label class="menu-item-available">
+            <input type="checkbox"
+                   class="availability-toggle"
+                   data-id="${item.id}"
+                   ${availableChecked}>
+            <span class="menu-item-available-text">Available</span>
+          </label>
+          <div class="menu-item-actions">
+            <button class="edit-button" data-id="${item.id}">Edit</button>
+            <button class="delete-button" data-id="${item.id}">Delete</button>
+          </div>
+        </div>
+      `;
 
-  container.appendChild(row);
-  });
+      container.appendChild(row);
+    });
   } catch (err) {
     console.error('Error loading menu admin:', err);
   }

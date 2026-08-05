@@ -117,7 +117,6 @@ async function fetchMenuUntilSuccess() {
 async function loadImageOnce(url, timeoutMs = PER_IMAGE_TIMEOUT_MS) {
   return new Promise(resolve => {
     const img = new Image();
-    img.crossOrigin = 'anonymous';
     let settled = false;
     const timer = setTimeout(() => {
       if (settled) return;

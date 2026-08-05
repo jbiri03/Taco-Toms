@@ -1,24 +1,42 @@
 // routes/menu.js
 import express from 'express';
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
 import pool from '../db.js';
+import crypto from 'crypto';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 const router = express.Router();
 
-// Multer setup (same as in upload.js)
-const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
+const r2 = new S3Client({
+  region: 'auto',
+  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY
+  }
 });
 
-const upload = multer({ storage });
+// Multer now keeps files in memory so nothing is written to local disk
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }
+});
+
+async function uploadToR2(file) {
+  const ext = file.originalname.split('.').pop() || 'jpg';
+  const key = `menu/${crypto.randomUUID()}.${ext}`;
+
+  await r2.send(
+    new PutObjectCommand({
+      Bucket: process.env.R2_BUCKET,
+      Key: key,
+      Body: file.buffer,
+      ContentType: file.mimetype
+    })
+  );
+
+  return `${process.env.R2_PUBLIC_BASE_URL}/${key}`;
+}
 
 // GET /menu — fetch all menu items (used by admin)
 router.get('/', async (req, res) => {
@@ -84,17 +102,15 @@ router.put('/:id/availability', async (req, res) => {
   }
 });
 
-
 // PUT /menu/:id — update a menu item (with optional photo upload)
 router.put('/:id', upload.single('photo'), async (req, res) => {
   const { id } = req.params;
   const { name, description, price, category, available } = req.body;
 
-  // If a photo is uploaded, use new photo_url; otherwise, keep existing
-  const newPhoto = req.file ? 'admin/uploads/' + req.file.filename : null;
-
   try {
-    if (newPhoto) {
+    if (req.file) {
+      const newPhoto = await uploadToR2(req.file);
+
       const [result] = await pool.query(
         `UPDATE menu_items
          SET name = ?, description = ?, price = ?, category = ?, photo_url = ?, available = ?
@@ -108,7 +124,6 @@ router.put('/:id', upload.single('photo'), async (req, res) => {
 
       return res.json({ message: 'Menu item updated successfully', photo_url: newPhoto });
     } else {
-      // No new photo – keep existing photo_url
       const [result] = await pool.query(
         `UPDATE menu_items
          SET name = ?, description = ?, price = ?, category = ?, available = ?

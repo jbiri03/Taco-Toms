@@ -44,7 +44,7 @@ async function loadMenuAdmin() {
 
       row.innerHTML = `
         ${item.photo_url
-          ? `<img src="../${item.photo_url}" alt="${item.name}" class="menu-item-thumb">`
+          ? `<img src="${item.photo_url}" alt="${item.name}" class="menu-item-thumb">`
           : `<div class="menu-item-no-image">No Image</div>`
         }
         <div class="menu-item-main">
