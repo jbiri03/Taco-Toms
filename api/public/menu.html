@@ -52,6 +52,15 @@
 
 
             <section class="menu-content">
+                <!-- Loading overlay / indicator -->
+                <div id="menu-loading" class="menu-loading hidden" aria-hidden="true" role="status" aria-live="polite">
+                    <div class="spinner" aria-hidden="true"></div>
+                    <span class="loading-text">Loading menu…</span>
+                </div>
+
+                <!-- Error area -->
+                <div id="menu-error" class="menu-error hidden" aria-live="assertive"></div>
+
                 <!-- MAIN ITEMS -->
                 <section id="main-section" class="menu-category-section" data-category="main">
                     <h1 class="menu-category-title">Main</h1>
