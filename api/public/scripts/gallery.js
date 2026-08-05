@@ -5,32 +5,39 @@ const prevBtn = document.getElementById("prevBtn");
 const dotsContainer = document.getElementById("galleryDots");
 
 let currentIndex = 0;
-let autoplayInterval;
-const autoplayDelay = 3500;
+let autoplayInterval = null;
+let autoplayTimeout = null;
 let autoplayPaused = false;
 
-let isPointerDown = false;
-let startX = 0;
-let startScrollLeft = 0;
-let autoplayTimeout;
+const autoplayDelay = 3500;
+const resumeDelay = 5000;
+
+let touchStartX = 0;
+let touchStartTime = 0;
+let isTouching = false;
+let scrollEndTimer = null;
 
 /* ===========================
    DOTS
    =========================== */
 
-slides.forEach((_, index) => {
-  const dot = document.createElement("button");
-  dot.classList.add("gallery-dot");
-  if (index === 0) dot.classList.add("active");
+function createDots() {
+  dotsContainer.innerHTML = "";
 
-  dot.addEventListener("click", () => {
-    pauseAutoplay();
-    currentIndex = index;
-    updateSlider(true);
+  slides.forEach((_, index) => {
+    const dot = document.createElement("button");
+    dot.className = "gallery-dot";
+    if (index === 0) dot.classList.add("active");
+
+    dot.type = "button";
+    dot.addEventListener("click", () => {
+      pauseAutoplay();
+      goToSlide(index);
+    });
+
+    dotsContainer.appendChild(dot);
   });
-
-  dotsContainer.appendChild(dot);
-});
+}
 
 function updateDots() {
   const dots = document.querySelectorAll(".gallery-dot");
@@ -40,38 +47,99 @@ function updateDots() {
 }
 
 /* ===========================
-   SLIDER UPDATE
+   SLIDE CONTROL
    =========================== */
 
-function updateSlider(smooth = true) {
+function goToSlide(index, smooth = true) {
+  currentIndex = Math.max(0, Math.min(index, slides.length - 1));
+
+  const left = currentIndex * track.clientWidth;
   track.scrollTo({
-    left: currentIndex * track.clientWidth,
+    left,
     behavior: smooth ? "smooth" : "auto"
   });
+
   updateDots();
 }
 
-/* ===========================
-   NEXT / PREV
-   =========================== */
-
 function goNext() {
-  if (currentIndex < slides.length - 1) {
-    currentIndex++;
-  } else {
-    currentIndex = 0;
-  }
-  updateSlider(true);
+  goToSlide(currentIndex === slides.length - 1 ? 0 : currentIndex + 1);
 }
 
 function goPrev() {
-  if (currentIndex > 0) {
-    currentIndex--;
-  } else {
-    currentIndex = slides.length - 1;
-  }
-  updateSlider(true);
+  goToSlide(currentIndex === 0 ? slides.length - 1 : currentIndex - 1);
 }
+
+/* ===========================
+   AUTOPLAY
+   =========================== */
+
+function startAutoplay() {
+  stopAutoplay();
+
+  autoplayInterval = setInterval(() => {
+    if (!autoplayPaused) {
+      goNext();
+    }
+  }, autoplayDelay);
+}
+
+function stopAutoplay() {
+  if (autoplayInterval) clearInterval(autoplayInterval);
+  if (autoplayTimeout) clearTimeout(autoplayTimeout);
+}
+
+function pauseAutoplay() {
+  autoplayPaused = true;
+  stopAutoplay();
+
+  autoplayTimeout = setTimeout(() => {
+    autoplayPaused = false;
+    startAutoplay();
+  }, resumeDelay);
+}
+
+/* ===========================
+   TOUCH / SCROLL HANDLING
+   =========================== */
+
+track.addEventListener("touchstart", (e) => {
+  if (!e.touches || !e.touches.length) return;
+
+  isTouching = true;
+  touchStartX = e.touches[0].clientX;
+  touchStartTime = Date.now();
+  pauseAutoplay();
+}, { passive: true });
+
+track.addEventListener("touchend", () => {
+  isTouching = false;
+  scheduleSnap();
+}, { passive: true });
+
+track.addEventListener("scroll", () => {
+  if (isTouching) return;
+  scheduleSnap();
+}, { passive: true });
+
+function scheduleSnap() {
+  clearTimeout(scrollEndTimer);
+  scrollEndTimer = setTimeout(() => {
+    snapToNearestSlide();
+  }, 120);
+}
+
+function snapToNearestSlide() {
+  const slideWidth = track.clientWidth;
+  const index = Math.round(track.scrollLeft / slideWidth);
+
+  currentIndex = Math.max(0, Math.min(index, slides.length - 1));
+  goToSlide(currentIndex, true);
+}
+
+/* ===========================
+   BUTTONS
+   =========================== */
 
 nextBtn.addEventListener("click", () => {
   pauseAutoplay();
@@ -83,81 +151,18 @@ prevBtn.addEventListener("click", () => {
   goPrev();
 });
 
-window.addEventListener("resize", () => updateSlider(false));
-
 /* ===========================
-   AUTOPLAY CONTROL
+   RESIZE
    =========================== */
 
-function startAutoplay() {
-  clearInterval(autoplayInterval);
-  autoplayInterval = setInterval(() => {
-    if (!autoplayPaused) {
-      goNext();
-    }
-  }, autoplayDelay);
-}
-
-function pauseAutoplay() {
-  autoplayPaused = true;
-  clearTimeout(autoplayTimeout);
-  clearInterval(autoplayInterval);
-
-  autoplayTimeout = setTimeout(() => {
-    autoplayPaused = false;
-    startAutoplay();
-  }, 5000);
-}
-
-/* ===========================
-   SWIPE / DRAG
-   =========================== */
-
-track.addEventListener("pointerdown", (e) => {
-  isPointerDown = true;
-  startX = e.clientX;
-  startScrollLeft = track.scrollLeft;
-  track.setPointerCapture(e.pointerId);
-  pauseAutoplay();
+window.addEventListener("resize", () => {
+  goToSlide(currentIndex, false);
 });
-
-track.addEventListener("pointermove", (e) => {
-  if (!isPointerDown) return;
-
-  const diff = e.clientX - startX;
-  track.scrollLeft = startScrollLeft - diff;
-});
-
-track.addEventListener("pointerup", () => {
-  if (!isPointerDown) return;
-  isPointerDown = false;
-  snapToNearestSlide();
-});
-
-track.addEventListener("pointercancel", () => {
-  isPointerDown = false;
-});
-
-/* ===========================
-   SNAP
-   =========================== */
-
-function snapToNearestSlide() {
-  const slideWidth = track.clientWidth;
-  const delta = track.scrollLeft - currentIndex * slideWidth;
-
-  if (delta > slideWidth * 0.12) {
-    currentIndex = Math.min(slides.length - 1, currentIndex + 1);
-  } else if (delta < -slideWidth * 0.12) {
-    currentIndex = Math.max(0, currentIndex - 1);
-  }
-
-  updateSlider(true);
-}
 
 /* ===========================
    INIT
    =========================== */
 
+createDots();
+goToSlide(0, false);
 startAutoplay();
-updateSlider(false);
