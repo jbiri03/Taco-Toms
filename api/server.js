@@ -158,8 +158,15 @@ app.post('/login', (req, res) => {
     password === process.env.ADMIN_PASS
   ) {
     req.session.loggedIn = true;
-    // return success JSON
-    return res.json({ success: true });
+
+    return req.session.save(err => {
+      if (err) {
+        console.error('Session save error:', err);
+        return res.status(500).json({ success: false, error: 'Login failed' });
+      }
+
+      return res.json({ success: true });
+    });
   }
 
   res.status(401).json({ success: false, error: 'Invalid credentials' });
