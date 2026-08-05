@@ -6,9 +6,9 @@
   <title>Admin – Menu Items</title>
   <link rel="stylesheet" href="admin.css">
 </head>
-<body>
+<body class="auth-checking">
 
-  <div class="admin-layout">
+  <div class="admin-layout" id="adminApp" style="display: none;">
     <!-- Left sidebar: Add Item -->
     <aside class="admin-sidebar">
 
@@ -117,5 +117,8 @@
   <!-- SCRIPTS -->
   <script src="scripts/add.js"></script>
   <script src="scripts/admin.js"></script>
+  <script src="scripts/admin-boot.js" defer></script>
+
 </body>
+
 </html>
