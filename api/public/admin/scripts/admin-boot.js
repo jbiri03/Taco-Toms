@@ -4,14 +4,16 @@
     cache: 'no-store'
   });
 
+  const body = document.body;
+  body.classList.remove('auth-checking', 'authenticated');
+
   if (!res.ok) {
     window.location.replace('/admin/admin-login.html');
     return;
   }
 
-  document.body.classList.remove('auth-checking');
-  document.body.classList.add('authenticated');
-})();
+  body.classList.add('authenticated');
 
-const app = document.getElementById('adminApp');
-app.style.display = 'block';
+  const app = document.getElementById('adminApp');
+  if (app) app.style.display = 'flex';
+})();
