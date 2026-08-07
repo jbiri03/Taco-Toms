@@ -185,7 +185,7 @@
 
 html, body {
   max-width: 100%;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }
 
 html {
@@ -938,10 +938,8 @@ body {
   border-radius: 24px;
   padding: 1.5rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  position: sticky;
-  top: 2rem;
-
-  /* shift it a bit to the right */
+  position: sticky !important;
+  top: 10rem;
   margin-left: 1.5rem;
 }
 
