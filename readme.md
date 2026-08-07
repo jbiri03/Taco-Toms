@@ -2,7 +2,7 @@
 
 A full-stack restaurant website built for Taco Tom’s Lonchera. The site provides customers with restaurant information and an accessible online menu, while giving authorized administrators tools to manage menu items and images.
 
-🔗 **Live site:** https://tacotomslonchera.com
+🔗 **Live site:** https://tacotomslonchera.com  
 📁 **Portfolio:** [Jasmine Biri Portfolio](https://jbiri03.github.io/portfolio/index.html)
 
 ## Preview
@@ -51,4 +51,4 @@ This project was created to build experience with full-stack web development and
 
 - GitHub: [@jbiri03](https://github.com/jbiri03)
 - Portfolio: [jbiri03.github.io/portfolio](https://jbiri03.github.io/portfolio/index.html)
-- - LinkedIn: [Jasmine Biri](https://www.linkedin.com/in/jasmine-biri-738559190)
+- LinkedIn: [Jasmine Biri](https://www.linkedin.com/in/jasmine-biri-738559190)
